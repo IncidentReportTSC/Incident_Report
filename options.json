@@ -1,0 +1,20 @@
+{
+  "cinemas": [
+    { "name": "TSC Beinasco (TO)", "screens": 9, "capacity": 2410, "area": "AREA 1" },
+    { "name": "UCI Bicocca (MI)", "screens": 18, "capacity": 3800, "area": "AREA 2" }
+  ],
+  "responsibilities": [
+    "Proiettore",
+    "Impianto Audio",
+    "Climatizzazione",
+    "Struttura / Poltrone",
+    "Software Cassa"
+  ],
+  "reasons": [
+    "Guasto Lampada Laser",
+    "Problema Server CPL",
+    "Perdita di Pressione Acqua",
+    "Mancanza Corrente Elettrica",
+    "Infiltrazione"
+  ]
+}
