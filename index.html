@@ -54,6 +54,15 @@
       border-radius: 6px;
       background-color: #fff;
     }
+    /* Colori dinamici per lo status */
+    .status-aperto {
+      color: #198754;
+      font-weight: bold;
+    }
+    .status-chiuso {
+      color: #dc3545;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -128,7 +137,7 @@
             <input type="text" id="txtArea" class="form-control" readonly>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Seleziona Sala/e Interessata/e</label>
+            <label class="form-label">Seleziona Sala/e Interessata/e (con Posti)</label>
             <div id="screensCheckboxes" class="screens-container">
               <span class="text-muted">Seleziona prima un cinema...</span>
             </div>
@@ -151,20 +160,23 @@
         </div>
 
         <div class="row mb-3">
-          <div class="col-md-4">
+          <div class="col-md-3">
             <label class="form-label">Numero di Riferimento</label>
             <input type="text" id="txtReference" class="form-control" placeholder="Es. Ticket o Rif.">
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
+            <label class="form-label">Data Apertura</label>
+            <input type="date" id="txtOpeningDate" class="form-control" required>
+          </div>
+          <div class="col-md-3">
             <label class="form-label">Data Probabile Chiusura</label>
             <input type="date" id="txtClosingDate" class="form-control">
           </div>
-          <div class="col-md-4">
-            <label class="form-label">Status / Verifica</label>
-            <select id="selStatus" class="form-select" required>
+          <div class="col-md-3">
+            <label class="form-label">Status</label>
+            <select id="selStatus" class="form-select" required onchange="aggiornaColoreStatus()">
               <option value="Aperto">Aperto</option>
-              <option value="In Verifica">In Verifica</option>
-              <option value="Risolto">Risolto</option>
+              <option value="Chiuso">Chiuso</option>
             </select>
           </div>
         </div>
@@ -243,6 +255,25 @@
         opt.textContent = reason;
         selReason.appendChild(opt);
       });
+
+      // Imposta la data di apertura odierna di default
+      const oggi = new Date().toISOString().split('T')[0];
+      const openingInput = document.getElementById('txtOpeningDate');
+      if (openingInput && !openingInput.value) {
+        openingInput.value = oggi;
+      }
+
+      aggiornaColoreStatus();
+    }
+
+    function aggiornaColoreStatus() {
+      const selectStatus = document.getElementById('selStatus');
+      selectStatus.className = "form-select ";
+      if (selectStatus.value === "Aperto") {
+        selectStatus.classList.add("status-aperto");
+      } else {
+        selectStatus.classList.add("status-chiuso");
+      }
     }
 
     function aggiornaDatiCinema() {
@@ -265,15 +296,22 @@
 
         container.innerHTML = '';
         const numSchermi = parseInt(cinemaObj.screens) || 0;
+        
         if (numSchermi > 0) {
           for (let i = 1; i <= numSchermi; i++) {
+            let postiSala = "";
+            if (cinemaObj.rooms && cinemaObj.rooms[i - 1]) {
+              postiSala = ` (${cinemaObj.rooms[i - 1].seats} posti)`;
+            }
+
             const div = document.createElement('div');
-            div.className = 'form-check form-check-inline';
-            div.style.marginRight = '15px';
+            div.className = 'form-check mb-2';
             
             div.innerHTML = `
-              <input class="form-check-input screen-checkbox" type="checkbox" value="Sala ${i}" id="chkSala${i}">
-              <label class="form-check-label" for="chkSala${i}">Sala ${i}</label>
+              <input class="form-check-input screen-checkbox" type="checkbox" value="Sala ${i}${postiSala}" id="chkSala${i}">
+              <label class="form-check-label" for="chkSala${i}">
+                <strong>Sala ${i}</strong> ${postiSala}
+              </label>
             `;
             container.appendChild(div);
           }
@@ -368,6 +406,7 @@
         responsibility: document.getElementById('selResponsibility').value,
         reason: document.getElementById('selReason').value,
         referenceNumber: document.getElementById('txtReference').value,
+        openingDate: document.getElementById('txtOpeningDate').value,
         closingDate: document.getElementById('txtClosingDate').value,
         status: document.getElementById('selStatus').value,
         comments: document.getElementById('txtComments').value,
@@ -399,6 +438,7 @@
           document.getElementById('txtCapacity').value = '';
           document.getElementById('txtArea').value = '';
           document.getElementById('screensCheckboxes').innerHTML = '<span class="text-muted">Seleziona prima un cinema...</span>';
+          popolaCampiForm(); // Ripristina la data odierna di default
         } else {
           msgEl.style.color = 'red';
           msgEl.textContent = 'Errore: ' + res.message;
