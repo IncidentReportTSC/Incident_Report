@@ -1,115 +1,18 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Incident Report System</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    #loginCard {
-      max-width: 420px;
-      margin: 80px auto;
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    }
-    .card-header-custom {
-      background-color: #8a0e88;
-      color: white;
-      text-align: center;
-      padding: 1.5rem;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-    }
-    .btn-custom {
-      background-color: #8a0e88;
-      color: white;
-    }
-    .btn-custom:hover {
-      background-color: #6b0b6a;
-      color: white;
-    }
-    .password-container {
-      position: relative;
-    }
-    .toggle-password {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      user-select: none;
-      font-size: 1.1rem;
-    }
-    .hidden { display: none !important; }
-  </style>
-</head>
-<body>
+let globalOptions = null;
 
-  <!-- SCHERMATA DI LOGIN -->
-  <div id="loginSection" class="container">
-    <div class="card" id="loginCard">
-      <div class="card-header-custom">
-        <h4 class="mb-0">📹 Accesso Incident Report</h4>
-      </div>
-      <div class="card-body p-4">
-        <form id="loginForm" onsubmit="event.preventDefault(); eseguiLogin();">
-          
-          <div class="mb-3">
-            <label for="loginUser" class="form-label"><strong>Nome Utente / Cinema</strong></label>
-            <select id="loginUser" class="form-select" required>
-              <option value="">Caricamento utenti in corso...</option>
-            </select>
-          </div>
-
-          <div class="mb-4">
-            <label for="loginPass" class="form-label"><strong>Password</strong></label>
-            <div class="password-container">
-              <input type="password" id="loginPass" class="form-control" placeholder="Inserisci password" required>
-              <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
-            </div>
-          </div>
-
-          <div class="d-grid">
-            <button type="submit" class="btn btn-custom btn-lg" id="btnLogin">ACCEDI</button>
-          </div>
-
-          <p id="loginMessage" class="text-center mt-3 fw-bold"></p>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCHERMATA PRINCIPALE (Form Incident) -->
-  <div id="appSection" class="container py-4 hidden">
-    <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded shadow-sm">
-      <div>
-        <span>Benvenuto, <strong id="lblUtente">-</strong> (<span id="lblRuolo">-</span>)</span>
-      </div>
-      <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
-    </div>
-
-    <div class="card p-4 shadow-sm">
-      <h3 class="text-primary mb-3">Compilazione Incident Report</h3>
-      <p>Pannello di controllo caricato con successo!</p>
-    </div>
-  </div>
-
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqGPvgJBNrAsBh51d7KQDmnm6RoyCLpefs4lVS4-BDFt-RhVKYYD9i-DJvOZpUoHo/exec";
-
-    let currentUser = null;
-
+    // Modifica la funzione caricaListaUtenti esistente per salvare anche le opzioni globali
     async function caricaListaUtenti() {
       const selectUser = document.getElementById('loginUser');
       try {
         const response = await fetch(SCRIPT_URL);
         const data = await response.json();
         
+        // Salva le opzioni (cinema, responsabilità, motivazioni)
+        if (data.options) {
+          globalOptions = data.options;
+          popolaCampiForm();
+        }
+
         selectUser.innerHTML = '<option value="">-- Seleziona Utente / Cinema --</option>';
         if (data.users && data.users.length > 0) {
           data.users.forEach(user => {
@@ -120,38 +23,78 @@
           });
         }
       } catch (err) {
-        console.error("Errore nel caricamento utenti:", err);
-        selectUser.innerHTML = '<option value="">Errore nel caricamento utenti</option>';
+        console.error("Errore nel caricamento:", err);
       }
     }
 
-    function togglePasswordVisibility() {
-      const passInput = document.getElementById('loginPass');
-      const toggleIcon = document.querySelector('.toggle-password');
+    function popolaCampiForm() {
+      if (!globalOptions) return;
       
-      if (passInput.type === 'password') {
-        passInput.type = 'text';
-        toggleIcon.textContent = '🙈';
-      } else {
-        passInput.type = 'password';
-        toggleIcon.textContent = '👁️';
-      }
+      // Popola Cinema
+      const selCinema = document.getElementById('selCinema');
+      selCinema.innerHTML = '<option value="">-- Seleziona Cinema --</option>';
+      globalOptions.cinemas.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = c.name;
+        selCinema.appendChild(opt);
+      });
+
+      // Popola Responsabilità
+      const selResp = document.getElementById('selResponsibility');
+      selResp.innerHTML = '<option value="">-- Seleziona --</option>';
+      globalOptions.responsibilities.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        selResp.appendChild(opt);
+      });
+
+      // Popola Motivazioni
+      const selReason = document.getElementById('selReason');
+      selReason.innerHTML = '<option value="">-- Seleziona --</option>';
+      globalOptions.reasons.forEach(reason => {
+        const opt = document.createElement('option');
+        opt.value = reason;
+        opt.textContent = reason;
+        selReason.appendChild(opt);
+      });
     }
 
-    async function eseguiLogin() {
-      const user = document.getElementById('loginUser').value;
-      const pass = document.getElementById('loginPass').value;
-      const msgEl = document.getElementById('loginMessage');
-      const btn = document.getElementById('btnLogin');
-
-      if (!user) {
-        msgEl.style.color = 'red';
-        msgEl.textContent = 'Seleziona un utente dal menu.';
+    function aggiornaDatiCinema() {
+      const nomeCinema = document.getElementById('selCinema').value;
+      if (!globalOptions || !nomeCinema) {
+        document.getElementById('txtScreens').value = '';
+        document.getElementById('txtCapacity').value = '';
+        document.getElementById('txtArea').value = '';
         return;
       }
+      const cinemaObj = globalOptions.cinemas.find(c => c.name === nomeCinema);
+      if (cinemaObj) {
+        document.getElementById('txtScreens').value = cinemaObj.screens;
+        document.getElementById('txtCapacity').value = cinemaObj.capacity;
+        document.getElementById('txtArea').value = cinemaObj.area;
+      }
+    }
+
+    async function salvaReport() {
+      const msgEl = document.getElementById('saveMessage');
+      const btn = document.getElementById('btnSave');
+      
+      const reportData = {
+        cinema: document.getElementById('selCinema').value,
+        nScreens: document.getElementById('txtScreens').value,
+        cinemaCapacity: document.getElementById('txtCapacity').value,
+        area: document.getElementById('txtArea').value,
+        responsibility: document.getElementById('selResponsibility').value,
+        reason: document.getElementById('selReason').value,
+        referenceNumber: document.getElementById('txtReference').value,
+        comments: document.getElementById('txtComments').value,
+        compiler: currentUser ? currentUser.username : 'Admin'
+      };
 
       msgEl.style.color = '#0d6efd';
-      msgEl.textContent = 'Verifica in corso...';
+      msgEl.textContent = 'Salvataggio in corso...';
       btn.disabled = true;
 
       try {
@@ -159,50 +102,30 @@
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({
-            action: 'login',
-            username: user,
-            password: pass
+            action: 'saveReport',
+            reportData: reportData,
+            username: currentUser.username,
+            ruolo: currentUser.ruolo
           })
         });
 
         const res = await response.json();
-
         if (res.success) {
-          currentUser = res;
           msgEl.style.color = 'green';
-          msgEl.textContent = 'Accesso riuscito!';
-          
-          setTimeout(() => {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('appSection').classList.remove('hidden');
-            document.getElementById('lblUtente').textContent = currentUser.username;
-            document.getElementById('lblRuolo').textContent = currentUser.ruolo;
-          }, 600);
-
+          msgEl.textContent = res.message;
+          document.getElementById('incidentForm').reset();
+          document.getElementById('txtScreens').value = '';
+          document.getElementById('txtCapacity').value = '';
+          document.getElementById('txtArea').value = '';
         } else {
           msgEl.style.color = 'red';
-          msgEl.textContent = res.message || 'Username o Password errati.';
+          msgEl.textContent = 'Errore: ' + res.message;
         }
-      } catch (error) {
-        console.error("Errore login:", error);
+      } catch (err) {
+        console.error(err);
         msgEl.style.color = 'red';
-        msgEl.textContent = 'Errore di connessione. Riprova.';
+        msgEl.textContent = 'Errore di connessione durante il salvataggio.';
       } finally {
         btn.disabled = false;
       }
     }
-
-    function logout() {
-      currentUser = null;
-      document.getElementById('appSection').classList.add('hidden');
-      document.getElementById('loginSection').classList.remove('hidden');
-      document.getElementById('loginPass').value = '';
-      document.getElementById('loginMessage').textContent = '';
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      caricaListaUtenti();
-    });
-  </script>
-</body>
-</html>
