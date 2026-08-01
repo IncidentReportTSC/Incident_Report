@@ -1,20 +1,667 @@
 {
   "cinemas": [
-    { "name": "TSC Beinasco (TO)", "screens": 9, "capacity": 2410, "area": "AREA 1" },
-    { "name": "UCI Bicocca (MI)", "screens": 18, "capacity": 3800, "area": "AREA 2" }
+    {
+      "name": "TSC Beinasco (TO)",
+      "screensCount": 9,
+      "capacity": 2410,
+      "area": "AREA 1",
+      "screens": [
+        { "name": "Sala 1", "seats": 401 },
+        { "name": "Sala 2", "seats": 404 },
+        { "name": "Sala 3", "seats": 298 },
+        { "name": "Sala 4", "seats": 142 },
+        { "name": "Sala 5", "seats": 142 },
+        { "name": "Sala 6", "seats": 536 },
+        { "name": "Sala 7", "seats": 243 },
+        { "name": "Sala 8", "seats": 122 },
+        { "name": "Sala 9", "seats": 122 }
+      ]
+    },
+    {
+      "name": "TSC Belpasso (CT)",
+      "screensCount": 12,
+      "capacity": 2428,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 171 },
+        { "name": "Sala 2", "seats": 180 },
+        { "name": "Sala 3", "seats": 198 },
+        { "name": "Sala 4", "seats": 216 },
+        { "name": "Sala 5", "seats": 235 },
+        { "name": "Sala 6", "seats": 205 },
+        { "name": "Sala 7", "seats": 180 },
+        { "name": "Sala 8", "seats": 188 },
+        { "name": "Sala 9", "seats": 217 },
+        { "name": "Sala 10", "seats": 199 },
+        { "name": "Sala 11", "seats": 234 },
+        { "name": "Sala 12", "seats": 205 }
+      ]
+    },
+    {
+      "name": "TSC Bologna (BO)",
+      "screensCount": 9,
+      "capacity": 1777,
+      "area": "AREA 3",
+      "screens": [
+        { "name": "Sala 1", "seats": 467 },
+        { "name": "Sala 2", "seats": 193 },
+        { "name": "Sala 3", "seats": 154 },
+        { "name": "Sala 4", "seats": 154 },
+        { "name": "Sala 5", "seats": 154 },
+        { "name": "Sala 6", "seats": 154 },
+        { "name": "Sala 7", "seats": 154 },
+        { "name": "Sala 8", "seats": 154 },
+        { "name": "Sala 9", "seats": 193 }
+      ]
+    },
+    {
+      "name": "TSC Casamassima (BA)",
+      "screensCount": 9,
+      "capacity": 1985,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 397 },
+        { "name": "Sala 2", "seats": 286 },
+        { "name": "Sala 3", "seats": 213 },
+        { "name": "Sala 4", "seats": 189 },
+        { "name": "Sala 5", "seats": 189 },
+        { "name": "Sala 6", "seats": 189 },
+        { "name": "Sala 7", "seats": 189 },
+        { "name": "Sala 8", "seats": 189 },
+        { "name": "Sala 9", "seats": 144 }
+      ]
+    },
+    {
+      "name": "TSC Catanzaro (CZ)",
+      "screensCount": 7,
+      "capacity": 1235,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 302 },
+        { "name": "Sala 2", "seats": 169 },
+        { "name": "Sala 3", "seats": 173 },
+        { "name": "Sala 4", "seats": 173 },
+        { "name": "Sala 5", "seats": 173 },
+        { "name": "Sala 6", "seats": 123 },
+        { "name": "Sala 7", "seats": 122 }
+      ]
+    },
+    {
+      "name": "TSC Cerro Maggiore (MI)",
+      "screensCount": 11,
+      "capacity": 2414,
+      "area": "AREA 1",
+      "screens": [
+        { "name": "Sala 1", "seats": 406 },
+        { "name": "Sala 2", "seats": 235 },
+        { "name": "Sala 3", "seats": 204 },
+        { "name": "Sala 4", "seats": 204 },
+        { "name": "Sala 5", "seats": 204 },
+        { "name": "Sala 6", "seats": 204 },
+        { "name": "Sala 7", "seats": 164 },
+        { "name": "Sala 8", "seats": 164 },
+        { "name": "Sala 9", "seats": 164 },
+        { "name": "Sala 10", "seats": 232 },
+        { "name": "Sala 11", "seats": 233 }
+      ]
+    },
+    {
+      "name": "TSC Corciano (PG)",
+      "screensCount": 11,
+      "capacity": 2449,
+      "area": "AREA 3",
+      "screens": [
+        { "name": "Sala 1", "seats": 381 },
+        { "name": "Sala 2", "seats": 269 },
+        { "name": "Sala 3", "seats": 208 },
+        { "name": "Sala 4", "seats": 208 },
+        { "name": "Sala 5", "seats": 208 },
+        { "name": "Sala 6", "seats": 208 },
+        { "name": "Sala 7", "seats": 208 },
+        { "name": "Sala 8", "seats": 208 },
+        { "name": "Sala 9", "seats": 208 },
+        { "name": "Sala 10", "seats": 171 },
+        { "name": "Sala 11", "seats": 172 }
+      ]
+    },
+    {
+      "name": "TSC Firenze (FI)",
+      "screensCount": 8,
+      "capacity": 1876,
+      "area": "AREA 3",
+      "screens": [
+        { "name": "Sala 1", "seats": 435 },
+        { "name": "Sala 2", "seats": 257 },
+        { "name": "Sala 3", "seats": 223 },
+        { "name": "Sala 4", "seats": 223 },
+        { "name": "Sala 5", "seats": 223 },
+        { "name": "Sala 6", "seats": 171 },
+        { "name": "Sala 7", "seats": 172 },
+        { "name": "Sala 8", "seats": 172 }
+      ]
+    },
+    {
+      "name": "TSC Genova (GE)",
+      "screensCount": 10,
+      "capacity": 1853,
+      "area": "AREA 1",
+      "screens": [
+        { "name": "Sala 1", "seats": 322 },
+        { "name": "Sala 2", "seats": 172 },
+        { "name": "Sala 3", "seats": 172 },
+        { "name": "Sala 4", "seats": 172 },
+        { "name": "Sala 5", "seats": 172 },
+        { "name": "Sala 6", "seats": 223 },
+        { "name": "Sala 7", "seats": 223 },
+        { "name": "Sala 8", "seats": 133 },
+        { "name": "Sala 9", "seats": 132 },
+        { "name": "Sala 10", "seats": 132 }
+      ]
+    },
+    {
+      "name": "TSC Grosseto (GR)",
+      "screensCount": 7,
+      "capacity": 1224,
+      "area": "AREA 3",
+      "screens": [
+        { "name": "Sala 1", "seats": 302 },
+        { "name": "Sala 2", "seats": 169 },
+        { "name": "Sala 3", "seats": 173 },
+        { "name": "Sala 4", "seats": 173 },
+        { "name": "Sala 5", "seats": 173 },
+        { "name": "Sala 6", "seats": 117 },
+        { "name": "Sala 7", "seats": 117 }
+      ]
+    },
+    {
+      "name": "TSC Guidonia (RM)",
+      "screensCount": 10,
+      "capacity": 2432,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 412 },
+        { "name": "Sala 2", "seats": 269 },
+        { "name": "Sala 3", "seats": 223 },
+        { "name": "Sala 4", "seats": 223 },
+        { "name": "Sala 5", "seats": 223 },
+        { "name": "Sala 6", "seats": 223 },
+        { "name": "Sala 7", "seats": 223 },
+        { "name": "Sala 8", "seats": 223 },
+        { "name": "Sala 9", "seats": 206 },
+        { "name": "Sala 10", "seats": 207 }
+      ]
+    },
+    {
+      "name": "TSC Lamezia Terme (CZ)",
+      "screensCount": 5,
+      "capacity": 995,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 303 },
+        { "name": "Sala 2", "seats": 173 },
+        { "name": "Sala 3", "seats": 173 },
+        { "name": "Sala 4", "seats": 173 },
+        { "name": "Sala 5", "seats": 173 }
+      ]
+    },
+    {
+      "name": "TSC Limena (PD)",
+      "screensCount": 14,
+      "capacity": 1416,
+      "area": "AREA 2",
+      "screens": [
+        { "name": "Sala 1", "seats": 102 },
+        { "name": "Sala 2", "seats": 101 },
+        { "name": "Sala 3", "seats": 101 },
+        { "name": "Sala 4", "seats": 101 },
+        { "name": "Sala 5", "seats": 101 },
+        { "name": "Sala 6", "seats": 101 },
+        { "name": "Sala 7", "seats": 101 },
+        { "name": "Sala 8", "seats": 101 },
+        { "name": "Sala 9", "seats": 101 },
+        { "name": "Sala 10", "seats": 101 },
+        { "name": "Sala 11", "seats": 101 },
+        { "name": "Sala 12", "seats": 101 },
+        { "name": "Sala 13", "seats": 101 },
+        { "name": "Sala 14", "seats": 103 }
+      ]
+    },
+    {
+      "name": "TSC Livorno (LI)",
+      "screensCount": 9,
+      "capacity": 926,
+      "area": "AREA 3",
+      "screens": [
+        { "name": "Sala 1", "seats": 182 },
+        { "name": "Sala 2", "seats": 93 },
+        { "name": "Sala 3", "seats": 93 },
+        { "name": "Sala 4", "seats": 93 },
+        { "name": "Sala 5", "seats": 93 },
+        { "name": "Sala 6", "seats": 93 },
+        { "name": "Sala 7", "seats": 93 },
+        { "name": "Sala 8", "seats": 93 },
+        { "name": "Sala 9", "seats": 93 }
+      ]
+    },
+    {
+      "name": "TSC Lugagnano (VR)",
+      "screensCount": 8,
+      "capacity": 1125,
+      "area": "AREA 2",
+      "screens": [
+        { "name": "Sala 1", "seats": 240 },
+        { "name": "Sala 2", "seats": 130 },
+        { "name": "Sala 3", "seats": 130 },
+        { "name": "Sala 4", "seats": 130 },
+        { "name": "Sala 5", "seats": 130 },
+        { "name": "Sala 6", "seats": 121 },
+        { "name": "Sala 7", "seats": 122 },
+        { "name": "Sala 8", "seats": 122 }
+      ]
+    },
+    {
+      "name": "TSC Montebello (PV)",
+      "screensCount": 9,
+      "capacity": 1853,
+      "area": "AREA 1",
+      "screens": [
+        { "name": "Sala 1", "seats": 381 },
+        { "name": "Sala 2", "seats": 243 },
+        { "name": "Sala 3", "seats": 184 },
+        { "name": "Sala 4", "seats": 184 },
+        { "name": "Sala 5", "seats": 184 },
+        { "name": "Sala 6", "seats": 184 },
+        { "name": "Sala 7", "seats": 184 },
+        { "name": "Sala 8", "seats": 154 },
+        { "name": "Sala 9", "seats": 155 }
+      ]
+    },
+    {
+      "name": "TSC Montesilvano (PE)",
+      "screensCount": 11,
+      "capacity": 2464,
+      "area": "AREA 3",
+      "screens": [
+        { "name": "Sala 1", "seats": 391 },
+        { "name": "Sala 2", "seats": 271 },
+        { "name": "Sala 3", "seats": 210 },
+        { "name": "Sala 4", "seats": 210 },
+        { "name": "Sala 5", "seats": 210 },
+        { "name": "Sala 6", "seats": 210 },
+        { "name": "Sala 7", "seats": 210 },
+        { "name": "Sala 8", "seats": 210 },
+        { "name": "Sala 9", "seats": 210 },
+        { "name": "Sala 10", "seats": 186 },
+        { "name": "Sala 11", "seats": 186 }
+      ]
+    },
+    {
+      "name": "TSC Napoli (NA)",
+      "screensCount": 11,
+      "capacity": 2701,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 420 },
+        { "name": "Sala 2", "seats": 295 },
+        { "name": "Sala 3", "seats": 231 },
+        { "name": "Sala 4", "seats": 231 },
+        { "name": "Sala 5", "seats": 231 },
+        { "name": "Sala 6", "seats": 231 },
+        { "name": "Sala 7", "seats": 231 },
+        { "name": "Sala 8", "seats": 231 },
+        { "name": "Sala 9", "seats": 231 },
+        { "name": "Sala 10", "seats": 184 },
+        { "name": "Sala 11", "seats": 185 }
+      ]
+    },
+    {
+      "name": "TSC Nola (NA)",
+      "screensCount": 9,
+      "capacity": 1240,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 260 },
+        { "name": "Sala 2", "seats": 140 },
+        { "name": "Sala 3", "seats": 120 },
+        { "name": "Sala 4", "seats": 120 },
+        { "name": "Sala 5", "seats": 120 },
+        { "name": "Sala 6", "seats": 120 },
+        { "name": "Sala 7", "seats": 120 },
+        { "name": "Sala 8", "seats": 120 },
+        { "name": "Sala 9", "seats": 120 }
+      ]
+    },
+    {
+      "name": "TSC Parma Campus (PR)",
+      "screensCount": 12,
+      "capacity": 1137,
+      "area": "AREA 3",
+      "screens": [
+        { "name": "Sala 1", "seats": 180 },
+        { "name": "Sala 2", "seats": 91 },
+        { "name": "Sala 3", "seats": 87 },
+        { "name": "Sala 4", "seats": 87 },
+        { "name": "Sala 5", "seats": 87 },
+        { "name": "Sala 6", "seats": 87 },
+        { "name": "Sala 7", "seats": 87 },
+        { "name": "Sala 8", "seats": 87 },
+        { "name": "Sala 9", "seats": 87 },
+        { "name": "Sala 10", "seats": 87 },
+        { "name": "Sala 11", "seats": 80 },
+        { "name": "Sala 12", "seats": 80 }
+      ]
+    },
+    {
+      "name": "TSC Parma Centro (PR)",
+      "screensCount": 7,
+      "capacity": 1421,
+      "area": "AREA 3",
+      "screens": [
+        { "name": "Sala 1", "seats": 340 },
+        { "name": "Sala 2", "seats": 210 },
+        { "name": "Sala 3", "seats": 180 },
+        { "name": "Sala 4", "seats": 180 },
+        { "name": "Sala 5", "seats": 180 },
+        { "name": "Sala 6", "seats": 165 },
+        { "name": "Sala 7", "seats": 166 }
+      ]
+    },
+    {
+      "name": "TSC Pradamano (UD)",
+      "screensCount": 12,
+      "capacity": 2498,
+      "area": "AREA 2",
+      "screens": [
+        { "name": "Sala 1", "seats": 390 },
+        { "name": "Sala 2", "seats": 270 },
+        { "name": "Sala 3", "seats": 210 },
+        { "name": "Sala 4", "seats": 210 },
+        { "name": "Sala 5", "seats": 210 },
+        { "name": "Sala 6", "seats": 210 },
+        { "name": "Sala 7", "seats": 210 },
+        { "name": "Sala 8", "seats": 210 },
+        { "name": "Sala 9", "seats": 210 },
+        { "name": "Sala 10", "seats": 136 },
+        { "name": "Sala 11", "seats": 136 },
+        { "name": "Sala 12", "seats": 136 }
+      ]
+    },
+    {
+      "name": "TSC Quartucciu (CA)",
+      "screensCount": 13,
+      "capacity": 917,
+      "area": "AREA 2",
+      "screens": [
+        { "name": "Sala 1", "seats": 120 },
+        { "name": "Sala 2", "seats": 70 },
+        { "name": "Sala 3", "seats": 65 },
+        { "name": "Sala 4", "seats": 65 },
+        { "name": "Sala 5", "seats": 65 },
+        { "name": "Sala 6", "seats": 65 },
+        { "name": "Sala 7", "seats": 65 },
+        { "name": "Sala 8", "seats": 65 },
+        { "name": "Sala 9", "seats": 65 },
+        { "name": "Sala 10", "seats": 65 },
+        { "name": "Sala 11", "seats": 65 },
+        { "name": "Sala 12", "seats": 66 },
+        { "name": "Sala 13", "seats": 66 }
+      ]
+    },
+    {
+      "name": "TSC Roma Moderno (RM)",
+      "screensCount": 5,
+      "capacity": 1124,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 147 },
+        { "name": "Sala 2", "seats": 216 },
+        { "name": "Sala 3", "seats": 444 },
+        { "name": "Sala 4", "seats": 188 },
+        { "name": "Sala 5", "seats": 129 }
+      ]
+    },
+    {
+      "name": "TSC Roma Parco de' Medici (RM)",
+      "screensCount": 18,
+      "capacity": 4054,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 450 },
+        { "name": "Sala 2", "seats": 310 },
+        { "name": "Sala 3", "seats": 250 },
+        { "name": "Sala 4", "seats": 250 },
+        { "name": "Sala 5", "seats": 250 },
+        { "name": "Sala 6", "seats": 250 },
+        { "name": "Sala 7", "seats": 250 },
+        { "name": "Sala 8", "seats": 250 },
+        { "name": "Sala 9", "seats": 250 },
+        { "name": "Sala 10", "seats": 220 },
+        { "name": "Sala 11", "seats": 220 },
+        { "name": "Sala 12", "seats": 180 },
+        { "name": "Sala 13", "seats": 180 },
+        { "name": "Sala 14", "seats": 180 },
+        { "name": "Sala 15", "seats": 150 },
+        { "name": "Sala 16", "seats": 150 },
+        { "name": "Sala 17", "seats": 132 },
+        { "name": "Sala 18", "seats": 132 }
+      ]
+    },
+    {
+      "name": "TSC Rozzano (MI)",
+      "screensCount": 13,
+      "capacity": 2904,
+      "area": "AREA 1",
+      "screens": [
+        { "name": "Sala 1", "seats": 420 },
+        { "name": "Sala 2", "seats": 290 },
+        { "name": "Sala 3", "seats": 230 },
+        { "name": "Sala 4", "seats": 230 },
+        { "name": "Sala 5", "seats": 230 },
+        { "name": "Sala 6", "seats": 230 },
+        { "name": "Sala 7", "seats": 230 },
+        { "name": "Sala 8", "seats": 230 },
+        { "name": "Sala 9", "seats": 210 },
+        { "name": "Sala 10", "seats": 210 },
+        { "name": "Sala 11", "seats": 160 },
+        { "name": "Sala 12", "seats": 132 },
+        { "name": "Sala 13", "seats": 132 }
+      ]
+    },
+    {
+      "name": "TSC Salerno (SA)",
+      "screensCount": 11,
+      "capacity": 1110,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 190 },
+        { "name": "Sala 2", "seats": 110 },
+        { "name": "Sala 3", "seats": 92 },
+        { "name": "Sala 4", "seats": 92 },
+        { "name": "Sala 5", "seats": 92 },
+        { "name": "Sala 6", "seats": 92 },
+        { "name": "Sala 7", "seats": 92 },
+        { "name": "Sala 8", "seats": 92 },
+        { "name": "Sala 9", "seats": 86 },
+        { "name": "Sala 10", "seats": 86 },
+        { "name": "Sala 11", "seats": 86 }
+      ]
+    },
+    {
+      "name": "TSC Sestu (CA)",
+      "screensCount": 12,
+      "capacity": 1654,
+      "area": "AREA 2",
+      "screens": [
+        { "name": "Sala 1", "seats": 280 },
+        { "name": "Sala 2", "seats": 180 },
+        { "name": "Sala 3", "seats": 140 },
+        { "name": "Sala 4", "seats": 140 },
+        { "name": "Sala 5", "seats": 140 },
+        { "name": "Sala 6", "seats": 140 },
+        { "name": "Sala 7", "seats": 140 },
+        { "name": "Sala 8", "seats": 140 },
+        { "name": "Sala 9", "seats": 110 },
+        { "name": "Sala 10", "seats": 110 },
+        { "name": "Sala 11", "seats": 67 },
+        { "name": "Sala 12", "seats": 67 }
+      ]
+    },
+    {
+      "name": "TSC Silea (TV)",
+      "screensCount": 12,
+      "capacity": 2450,
+      "area": "AREA 2",
+      "screens": [
+        { "name": "Sala 1", "seats": 390 },
+        { "name": "Sala 2", "seats": 270 },
+        { "name": "Sala 3", "seats": 210 },
+        { "name": "Sala 4", "seats": 210 },
+        { "name": "Sala 5", "seats": 210 },
+        { "name": "Sala 6", "seats": 210 },
+        { "name": "Sala 7", "seats": 210 },
+        { "name": "Sala 8", "seats": 210 },
+        { "name": "Sala 9", "seats": 180 },
+        { "name": "Sala 10", "seats": 180 },
+        { "name": "Sala 11", "seats": 90 },
+        { "name": "Sala 12", "seats": 90 }
+      ]
+    },
+    {
+      "name": "TSC Surbo (LE)",
+      "screensCount": 9,
+      "capacity": 1980,
+      "area": "AREA 4",
+      "screens": [
+        { "name": "Sala 1", "seats": 390 },
+        { "name": "Sala 2", "seats": 280 },
+        { "name": "Sala 3", "seats": 210 },
+        { "name": "Sala 4", "seats": 190 },
+        { "name": "Sala 5", "seats": 190 },
+        { "name": "Sala 6", "seats": 190 },
+        { "name": "Sala 7", "seats": 190 },
+        { "name": "Sala 8", "seats": 190 },
+        { "name": "Sala 9", "seats": 150 }
+      ]
+    },
+    {
+      "name": "TSC Terni (TR)",
+      "screensCount": 9,
+      "capacity": 1780,
+      "area": "AREA 3",
+      "screens": [
+        { "name": "Sala 1", "seats": 360 },
+        { "name": "Sala 2", "seats": 240 },
+        { "name": "Sala 3", "seats": 180 },
+        { "name": "Sala 4", "seats": 180 },
+        { "name": "Sala 5", "seats": 180 },
+        { "name": "Sala 6", "seats": 180 },
+        { "name": "Sala 7", "seats": 160 },
+        { "name": "Sala 8", "seats": 150 },
+        { "name": "Sala 9", "seats": 150 }
+      ]
+    },
+    {
+      "name": "TSC Torino (TO)",
+      "screensCount": 8,
+      "capacity": 1850,
+      "area": "AREA 1",
+      "screens": [
+        { "name": "Sala 1", "seats": 420 },
+        { "name": "Sala 2", "seats": 260 },
+        { "name": "Sala 3", "seats": 220 },
+        { "name": "Sala 4", "seats": 220 },
+        { "name": "Sala 5", "seats": 220 },
+        { "name": "Sala 6", "seats": 170 },
+        { "name": "Sala 7", "seats": 170 },
+        { "name": "Sala 8", "seats": 170 }
+      ]
+    },
+    {
+      "name": "TSC Torri di Quartesolo (VI)",
+      "screensCount": 9,
+      "capacity": 1920,
+      "area": "AREA 2",
+      "screens": [
+        { "name": "Sala 1", "seats": 380 },
+        { "name": "Sala 2", "seats": 250 },
+        { "name": "Sala 3", "seats": 200 },
+        { "name": "Sala 4", "seats": 200 },
+        { "name": "Sala 5", "seats": 200 },
+        { "name": "Sala 6", "seats": 200 },
+        { "name": "Sala 7", "seats": 170 },
+        { "name": "Sala 8", "seats": 160 },
+        { "name": "Sala 9", "seats": 160 }
+      ]
+    },
+    {
+      "name": "TSC Trieste (TS)",
+      "screensCount": 7,
+      "capacity": 1220,
+      "area": "AREA 1",
+      "screens": [
+        { "name": "Sala 1", "seats": 300 },
+        { "name": "Sala 2", "seats": 170 },
+        { "name": "Sala 3", "seats": 170 },
+        { "name": "Sala 4", "seats": 170 },
+        { "name": "Sala 5", "seats": 170 },
+        { "name": "Sala 6", "seats": 120 },
+        { "name": "Sala 7", "seats": 120 }
+      ]
+    },
+    {
+      "name": "TSC Vimercate (MB)",
+      "screensCount": 16,
+      "capacity": 3480,
+      "area": "AREA 1",
+      "screens": [
+        { "name": "Sala 1", "seats": 440 },
+        { "name": "Sala 2", "seats": 300 },
+        { "name": "Sala 3", "seats": 240 },
+        { "name": "Sala 4", "seats": 240 },
+        { "name": "Sala 5", "seats": 240 },
+        { "name": "Sala 6", "seats": 240 },
+        { "name": "Sala 7", "seats": 240 },
+        { "name": "Sala 8", "seats": 240 },
+        { "name": "Sala 9", "seats": 210 },
+        { "name": "Sala 10", "seats": 210 },
+        { "name": "Sala 11", "seats": 180 },
+        { "name": "Sala 12", "seats": 180 },
+        { "name": "Sala 13", "seats": 150 },
+        { "name": "Sala 14", "seats": 150 },
+        { "name": "Sala 15", "seats": 110 },
+        { "name": "Sala 16", "seats": 110 }
+      ]
+    }
   ],
   "responsibilities": [
-    "Proiettore",
-    "Impianto Audio",
-    "Climatizzazione",
-    "Struttura / Poltrone",
-    "Software Cassa"
+    "TSC",
+    "Landlord"
   ],
   "reasons": [
-    "Guasto Lampada Laser",
-    "Problema Server CPL",
-    "Perdita di Pressione Acqua",
-    "Mancanza Corrente Elettrica",
-    "Infiltrazione"
+    "Hvac Systems",
+    "Extinguishers, Fire Doors, Hoses",
+    "Sound System Alarm (Evac)",
+    "Security Systems (Ups/Fire/Smoke Detection)",
+    "Projection",
+    "Building Works-Water Infiltration",
+    "Screen Content",
+    "Refurbishment",
+    "Lifting Systems",
+    "Electrical",
+    "Escalatorn",
+    "Seating & Furnishing",
+    "Natural Disaster",
+    "Concession",
+    "Landlord",
+    "Others"
+  ],
+  "sessions_lost": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "> 5",
+    "Tutti gli spettacoli del giorno"
   ]
 }
