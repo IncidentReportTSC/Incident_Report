@@ -1,110 +1,10 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Incident Report System</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    #loginCard {
-      max-width: 420px;
-      margin: 80px auto;
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    }
-    .card-header-custom {
-      background-color: #8a0e88;
-      color: white;
-      text-align: center;
-      padding: 1.5rem;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-    }
-    .btn-custom {
-      background-color: #8a0e88;
-      color: white;
-    }
-    .btn-custom:hover {
-      background-color: #6b0b6a;
-      color: white;
-    }
-    .password-container {
-      position: relative;
-    }
-    .toggle-password {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      user-select: none;
-      font-size: 1.1rem;
-    }
-    .hidden { display: none !important; }
-  </style>
-</head>
-<body>
-
-  <!-- SCHERMATA DI LOGIN -->
-  <div id="loginSection" class="container">
-    <div class="card" id="loginCard">
-      <div class="card-header-custom">
-        <h4 class="mb-0">📹 Accesso Incident Report</h4>
-      </div>
-      <div class="card-body p-4">
-        <form id="loginForm" onsubmit="event.preventDefault(); eseguiLogin();">
-          
-          <div class="mb-3">
-            <label for="loginUser" class="form-label"><strong>Nome Utente / Cinema</strong></label>
-            <select id="loginUser" class="form-select" required>
-              <option value="">Caricamento utenti in corso...</option>
-            </select>
-          </div>
-
-          <div class="mb-4">
-            <label for="loginPass" class="form-label"><strong>Password</strong></label>
-            <div class="password-container">
-              <input type="password" id="loginPass" class="form-control" placeholder="Inserisci password" required>
-              <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
-            </div>
-          </div>
-
-          <div class="d-grid">
-            <button type="submit" class="btn btn-custom btn-lg" id="btnLogin">ACCEDI</button>
-          </div>
-
-          <p id="loginMessage" class="text-center mt-3 fw-bold"></p>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCHERMATA PRINCIPALE (Form Incident) -->
-  <div id="appSection" class="container py-4 hidden">
-    <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded shadow-sm">
-      <div>
-        <span>Benvenuto, <strong id="lblUtente">-</strong> (<span id="lblRuolo">-</span>)</span>
-      </div>
-      <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
-    </div>
-
-    <div class="card p-4 shadow-sm">
-      <h3 class="text-primary mb-3">Compilazione Incident Report</h3>
-      <p>Pannello di controllo caricato con successo!</p>
-    </div>
-  </div>
-
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjwGLowrw4e7yBxayDH6jfp1f5laatjeclog-tOZPW1RHu5iamvgu03i4J6ZUXa80/exec";
+<script>
+    // INCOLLA QUI IL TUO NUOVO URL APPLICWEB APPENA GENERATO
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqGPvgJBNrAsBh51d7KQDmnm6RoyCLpefs4lVS4-BDFt-RhVKYYD9i-DJvOZpUoHo/exec";
 
     let currentUser = null;
 
-    // Carica la lista degli utenti dal foglio "Utenti"
+    // Carica la lista degli utenti dal JSON restituito da Google
     async function caricaListaUtenti() {
       const selectUser = document.getElementById('loginUser');
       try {
@@ -119,8 +19,6 @@
             opt.textContent = user;
             selectUser.appendChild(opt);
           });
-        } else {
-          selectUser.innerHTML = '<option value="Admin">Admin</option>';
         }
       } catch (err) {
         console.error("Errore nel caricamento utenti:", err);
@@ -142,7 +40,7 @@
       }
     }
 
-    // Esegui Login via API
+    // Esegui Login via API POST
     async function eseguiLogin() {
       const user = document.getElementById('loginUser').value;
       const pass = document.getElementById('loginPass').value;
@@ -186,7 +84,7 @@
 
         } else {
           msgEl.style.color = 'red';
-          msgEl.textContent = res.message || 'Password errata.';
+          msgEl.textContent = res.message || 'Username o Password errati.';
         }
       } catch (error) {
         console.error("Errore login:", error);
@@ -210,5 +108,3 @@
       caricaListaUtenti();
     });
   </script>
-</body>
-</html>
