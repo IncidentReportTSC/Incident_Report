@@ -221,10 +221,9 @@
     let currentUser = null;
     let globalOptions = null;
 
-  async function caricaListaUtenti() {
+async function caricaListaUtenti() {
       const selectUser = document.getElementById('loginUser');
       try {
-        // Usiamo un trucchetto con mode: 'no-cors' o un fetch diretto gestendo il testo
         const response = await fetch(SCRIPT_URL, { redirect: "follow" });
         const textData = await response.text();
         const data = JSON.parse(textData);
@@ -245,7 +244,7 @@
         }
       } catch (err) {
         console.error("Errore nel caricamento:", err);
-        // Fallback di emergenza diretto se la chiamata fetch viene bloccata dal browser in locale
+        // Fallback di emergenza con i backtick (` `) corretti per stringhe multilinea
         selectUser.innerHTML = `
           <option value="">-- Seleziona Utente / Cinema --</option>
           <option value="admin">admin</option>
