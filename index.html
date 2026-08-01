@@ -1,13 +1,170 @@
-let globalOptions = null;
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incident Report System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    #loginCard {
+      max-width: 420px;
+      margin: 80px auto;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .card-header-custom {
+      background-color: #8a0e88;
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+    .btn-custom {
+      background-color: #8a0e88;
+      color: white;
+    }
+    .btn-custom:hover {
+      background-color: #6b0b6a;
+      color: white;
+    }
+    .password-container {
+      position: relative;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      user-select: none;
+      font-size: 1.1rem;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
 
-    // Modifica la funzione caricaListaUtenti esistente per salvare anche le opzioni globali
+  <!-- SCHERMATA DI LOGIN -->
+  <div id="loginSection" class="container">
+    <div class="card" id="loginCard">
+      <div class="card-header-custom">
+        <h4 class="mb-0">📹 Accesso Incident Report</h4>
+      </div>
+      <div class="card-body p-4">
+        <form id="loginForm" onsubmit="event.preventDefault(); eseguiLogin();">
+          
+          <div class="mb-3">
+            <label for="loginUser" class="form-label"><strong>Nome Utente / Cinema</strong></label>
+            <select id="loginUser" class="form-select" required>
+              <option value="">Caricamento utenti in corso...</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label for="loginPass" class="form-label"><strong>Password</strong></label>
+            <div class="password-container">
+              <input type="password" id="loginPass" class="form-control" placeholder="Inserisci password" required>
+              <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+            </div>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-custom btn-lg" id="btnLogin">ACCEDI</button>
+          </div>
+
+          <p id="loginMessage" class="text-center mt-3 fw-bold"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHERMATA PRINCIPALE (Form Incident) -->
+  <div id="appSection" class="container py-4 hidden">
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded shadow-sm">
+      <div>
+        <span>Benvenuto, <strong id="lblUtente">-</strong> (<span id="lblRuolo">-</span>)</span>
+      </div>
+      <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="card p-4 shadow-sm">
+      <h3 class="text-primary mb-3">Compilazione Incident Report</h3>
+      <form id="incidentForm" onsubmit="event.preventDefault(); salvaReport();">
+        
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Cinema</label>
+            <select id="selCinema" class="form-select" required onchange="aggiornaDatiCinema()">
+              <option value="">-- Seleziona Cinema --</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">N. Schermi</label>
+            <input type="text" id="txtScreens" class="form-control" readonly>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Capacità Totale</label>
+            <input type="text" id="txtCapacity" class="form-control" readonly>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Area</label>
+            <input type="text" id="txtArea" class="form-control" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Responsabilità</label>
+            <select id="selResponsibility" class="form-select" required>
+              <option value="">-- Seleziona --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Motivazione</label>
+            <select id="selReason" class="form-select" required>
+              <option value="">-- Seleziona --</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Numero di Riferimento</label>
+            <input type="text" id="txtReference" class="form-control" placeholder="Es. Ticket o Rif.">
+          </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Commenti / Descrizione</label>
+            <textarea id="txtComments" class="form-control" rows="3" placeholder="Dettagli dell'incidente..."></textarea>
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-custom btn-lg" id="btnSave">Salva Report</button>
+        </div>
+        <p id="saveMessage" class="text-center mt-3 fw-bold"></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqGPvgJBNrAsBh51d7KQDmnm6RoyCLpefs4lVS4-BDFt-RhVKYYD9i-DJvOZpUoHo/exec";
+
+    let currentUser = null;
+    let globalOptions = null;
+
     async function caricaListaUtenti() {
       const selectUser = document.getElementById('loginUser');
       try {
         const response = await fetch(SCRIPT_URL);
         const data = await response.json();
         
-        // Salva le opzioni (cinema, responsabilità, motivazioni)
         if (data.options) {
           globalOptions = data.options;
           popolaCampiForm();
@@ -24,13 +181,13 @@ let globalOptions = null;
         }
       } catch (err) {
         console.error("Errore nel caricamento:", err);
+        selectUser.innerHTML = '<option value="">Errore caricamento utenti</option>';
       }
     }
 
     function popolaCampiForm() {
       if (!globalOptions) return;
       
-      // Popola Cinema
       const selCinema = document.getElementById('selCinema');
       selCinema.innerHTML = '<option value="">-- Seleziona Cinema --</option>';
       globalOptions.cinemas.forEach(c => {
@@ -40,7 +197,6 @@ let globalOptions = null;
         selCinema.appendChild(opt);
       });
 
-      // Popola Responsabilità
       const selResp = document.getElementById('selResponsibility');
       selResp.innerHTML = '<option value="">-- Seleziona --</option>';
       globalOptions.responsibilities.forEach(r => {
@@ -50,7 +206,6 @@ let globalOptions = null;
         selResp.appendChild(opt);
       });
 
-      // Popola Motivazioni
       const selReason = document.getElementById('selReason');
       selReason.innerHTML = '<option value="">-- Seleziona --</option>';
       globalOptions.reasons.forEach(reason => {
@@ -74,6 +229,73 @@ let globalOptions = null;
         document.getElementById('txtScreens').value = cinemaObj.screens;
         document.getElementById('txtCapacity').value = cinemaObj.capacity;
         document.getElementById('txtArea').value = cinemaObj.area;
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('loginPass');
+      const toggleIcon = document.querySelector('.toggle-password');
+      
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        toggleIcon.textContent = '🙈';
+      } else {
+        passInput.type = 'password';
+        toggleIcon.textContent = '👁️';
+      }
+    }
+
+    async function eseguiLogin() {
+      const user = document.getElementById('loginUser').value;
+      const pass = document.getElementById('loginPass').value;
+      const msgEl = document.getElementById('loginMessage');
+      const btn = document.getElementById('btnLogin');
+
+      if (!user) {
+        msgEl.style.color = 'red';
+        msgEl.textContent = 'Seleziona un utente dal menu.';
+        return;
+      }
+
+      msgEl.style.color = '#0d6efd';
+      msgEl.textContent = 'Verifica in corso...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            action: 'login',
+            username: user,
+            password: pass
+          })
+        });
+
+        const res = await response.json();
+
+        if (res.success) {
+          currentUser = res;
+          msgEl.style.color = 'green';
+          msgEl.textContent = 'Accesso riuscito!';
+          
+          setTimeout(() => {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            document.getElementById('lblUtente').textContent = currentUser.username;
+            document.getElementById('lblRuolo').textContent = currentUser.ruolo;
+          }, 600);
+
+        } else {
+          msgEl.style.color = 'red';
+          msgEl.textContent = res.message || 'Username o Password errati.';
+        }
+      } catch (error) {
+        console.error("Errore login:", error);
+        msgEl.style.color = 'red';
+        msgEl.textContent = 'Errore di connessione. Riprova.';
+      } finally {
+        btn.disabled = false;
       }
     }
 
@@ -129,3 +351,18 @@ let globalOptions = null;
         btn.disabled = false;
       }
     }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById('appSection').classList.add('hidden');
+      document.getElementById('loginSection').classList.remove('hidden');
+      document.getElementById('loginPass').value = '';
+      document.getElementById('loginMessage').textContent = '';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      caricaListaUtenti();
+    });
+  </script>
+</body>
+</html>
