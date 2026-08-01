@@ -170,12 +170,8 @@
             <input type="text" id="txtReference" class="form-control" placeholder="Es. Ticket o Rif.">
           </div>
           <div class="col-md-3">
-            <label class="form-label">Data Apertura</label>
-            <input type="date" id="txtOpeningDate" class="form-control" required>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Data Probabile Chiusura</label>
-            <input type="date" id="txtClosingDate" class="form-control">
+            <label class="form-label">Compilatore</label>
+            <input type="text" id="txtCompiler" class="form-control" placeholder="Nome compilatore">
           </div>
           <div class="col-md-3">
             <label class="form-label">Status</label>
@@ -184,6 +180,26 @@
               <option value="Chiuso">Chiuso</option>
             </select>
           </div>
+          <div class="col-md-3">
+            <label class="form-label">Data Apertura</label>
+            <input type="date" id="txtOpeningDate" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Data Probabile Chiusura</label>
+            <input type="date" id="txtExpectedClosingDate" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Data Chiusura Effettiva</label>
+            <input type="date" id="txtActualClosingDate" class="form-control">
+          </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Azioni Intraprese</label>
+            <textarea id="txtActions" class="form-control" rows="2" placeholder="Azioni correttive messe in campo..."></textarea>
         </div>
 
         <div class="mb-3">
@@ -267,6 +283,10 @@
         openingInput.value = oggi;
       }
 
+      if (currentUser && !document.getElementById('txtCompiler').value) {
+        document.getElementById('txtCompiler').value = currentUser.username;
+      }
+
       aggiornaColoreStatus();
     }
 
@@ -302,7 +322,6 @@
         const numSchermi = parseInt(cinemaObj.screens) || 0;
         
         if (numSchermi > 0) {
-          // Calcoliamo una stima media dei posti per sala se il dettaglio puntuale non è presente nel JSON
           let postiMedioPerSala = Math.round((parseInt(cinemaObj.capacity) || 0) / numSchermi);
 
           for (let i = 1; i <= numSchermi; i++) {
@@ -388,6 +407,7 @@
             document.getElementById('appSection').classList.remove('hidden');
             document.getElementById('lblUtente').textContent = currentUser.username;
             document.getElementById('lblRuolo').textContent = currentUser.ruolo;
+            document.getElementById('txtCompiler').value = currentUser.username;
           }, 600);
 
         } else {
@@ -421,11 +441,13 @@
         responsibility: document.getElementById('selResponsibility').value,
         reason: document.getElementById('selReason').value,
         referenceNumber: document.getElementById('txtReference').value,
-        openingDate: document.getElementById('txtOpeningDate').value,
-        closingDate: document.getElementById('txtClosingDate').value,
+        compiler: document.getElementById('txtCompiler').value,
         status: document.getElementById('selStatus').value,
-        comments: document.getElementById('txtComments').value,
-        compiler: currentUser ? currentUser.username : 'Admin'
+        openingDate: document.getElementById('txtOpeningDate').value,
+        expectedClosingDate: document.getElementById('txtExpectedClosingDate').value,
+        actualClosingDate: document.getElementById('txtActualClosingDate').value,
+        actions: document.getElementById('txtActions').value,
+        comments: document.getElementById('txtComments').value
       };
 
       msgEl.style.color = '#0d6efd';
@@ -452,7 +474,7 @@
           document.getElementById('txtScreens').value = '';
           document.getElementById('txtCapacity').value = '';
           document.getElementById('txtArea').value = '';
-          document.getElementById('screensCheckboxes').innerHTML = '<span class="text-muted">Seleziona prima un cinema...</span>';
+          document.getElementById('screensCheckboxes').innerHTML = '<span class="text-muted">Seleziona prima un cinema...â€¦</span>';
           popolaCampiForm();
         } else {
           msgEl.style.color = 'red';
@@ -470,7 +492,6 @@
     function logout() {
       currentUser = null;
       document.getElementById('appSection').classList.add('hidden');
-      document.getElementById('loginSection').classList.add('hidden'); // Fix safe
       document.getElementById('loginSection').classList.remove('hidden');
       document.getElementById('loginPass').value = '';
       document.getElementById('loginMessage').textContent = '';
