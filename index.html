@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Inserimento Incident Report</title>
+  <title>Incident Report System</title>
   <style>
     :root {
       --primary-color: #8a0e88;
@@ -27,7 +27,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* LOGIN MODAL */
     #loginSection {
       max-width: 400px;
       margin: 80px auto;
@@ -44,7 +43,8 @@
       padding-bottom: 5px;
       margin-top: 20px;
       margin-bottom: 15px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
     }
 
     .grid-row {
@@ -79,7 +79,6 @@
       min-height: 60px;
     }
 
-    /* Screen Status Styling */
     .status-select {
       font-weight: bold;
       color: white !important;
@@ -88,7 +87,6 @@
     .status-close { background-color: var(--danger-color) !important; }
     .status-open { background-color: var(--success-color) !important; }
 
-    /* Buttons & Table */
     .btn {
       padding: 10px 20px;
       border: none;
@@ -128,12 +126,12 @@
 </head>
 <body>
 
-  <!-- SCHERMATA LOGIN -->
+  <!-- LOGIN SECTION -->
   <div id="loginSection">
-    <h2 style="color: var(--primary-color);">Accesso Sistema Report</h2>
+    <h2 style="color: var(--primary-color);">Accesso Incident Report</h2>
     <div style="text-align: left; margin-bottom: 15px;">
       <label>Nome Utente / Cinema</label>
-      <input type="text" id="loginUser" style="width: 100%; box-sizing: border-box;" placeholder="Es: TSC Beinasco">
+      <input type="text" id="loginUser" style="width: 100%; box-sizing: border-box;" placeholder="Es: TSC Beinasco (TO) o Admin">
     </div>
     <div style="text-align: left; margin-bottom: 20px;">
       <label>Password</label>
@@ -143,7 +141,7 @@
     <p id="loginError" style="color: red; margin-top: 10px;"></p>
   </div>
 
-  <!-- CONTENITORE PRINCIPALE FORM E TABELLA -->
+  <!-- APP SECTION -->
   <div id="appSection" class="container hidden">
     
     <div class="header-bar">
@@ -183,31 +181,26 @@
       <div class="grid-row">
         <div class="form-group">
           <label>Cinema</label>
-          <select id="cinemaSelect" required>
+          <select id="cinemaSelect" required onchange="aggiornaDatiCinemaSelezionato()">
             <option value="">-- Seleziona Cinema --</option>
-            <option value="TSC Beinasco (TO)">TSC Beinasco (TO)</option>
-            <option value="UCI Milano">UCI Milano</option>
-            <option value="The Space Roma">The Space Roma</option>
           </select>
         </div>
         <div class="form-group">
           <label>N. Screens</label>
-          <input type="number" id="nScreens">
+          <input type="number" id="nScreens" readonly style="background-color: #eee;">
         </div>
         <div class="form-group">
           <label>Cinema Capacity (N.Seats)</label>
-          <input type="number" id="cinemaCapacity">
+          <input type="number" id="cinemaCapacity" readonly style="background-color: #eee;">
         </div>
         <div class="form-group">
           <label>Area</label>
-          <input type="text" id="area">
+          <input type="text" id="area" readonly style="background-color: #eee;">
         </div>
         <div class="form-group">
           <label>Responsibility of failed equipment</label>
           <select id="responsibility">
             <option value="">-- Seleziona --</option>
-            <option value="Internal">Internal</option>
-            <option value="External Supplier">External Supplier</option>
           </select>
         </div>
       </div>
@@ -227,9 +220,6 @@
           <label>Reason</label>
           <select id="reason">
             <option value="">-- Seleziona --</option>
-            <option value="Proiettore Guasto">Proiettore Guasto</option>
-            <option value="Audio Assente">Audio Assente</option>
-            <option value="Climatizzazione">Climatizzazione</option>
           </select>
         </div>
         <div class="form-group">
@@ -285,7 +275,7 @@
       </div>
     </form>
 
-    <!-- TABELLA REPORT SALVATI -->
+    <!-- TABELLA REPORT -->
     <div class="section-title" style="margin-top: 40px;">Elenco Report Registrati</div>
     <div style="overflow-x: auto;">
       <table id="reportsTable">
@@ -310,10 +300,67 @@
   </div>
 
   <script>
-    // Stato utente in sessione
     let currentUser = null;
+    let appOptionsData = null;
 
-    // LOGIN
+    // Carica opzioni cinemas/reasons all'avvio
+    window.onload = function() {
+      google.script.run
+        .withSuccessHandler(function(options) {
+          appOptionsData = options;
+          popolaTendineIniziali();
+        })
+        .getAppOptions();
+    };
+
+    function popolaTendineIniziali() {
+      if (!appOptionsData) return;
+
+      const cinemaSelect = document.getElementById('cinemaSelect');
+      cinemaSelect.innerHTML = '<option value="">-- Seleziona Cinema --</option>';
+      appOptionsData.cinemas.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = c.name;
+        cinemaSelect.appendChild(opt);
+      });
+
+      const respSelect = document.getElementById('responsibility');
+      respSelect.innerHTML = '<option value="">-- Seleziona --</option>';
+      appOptionsData.responsibilities.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        respSelect.appendChild(opt);
+      });
+
+      const reasonSelect = document.getElementById('reason');
+      reasonSelect.innerHTML = '<option value="">-- Seleziona --</option>';
+      appOptionsData.reasons.forEach(reas => {
+        const opt = document.createElement('option');
+        opt.value = reas;
+        opt.textContent = reas;
+        reasonSelect.appendChild(opt);
+      });
+    }
+
+    function aggiornaDatiCinemaSelezionato() {
+      const selectedName = document.getElementById('cinemaSelect').value;
+      if (!appOptionsData || !selectedName) {
+        document.getElementById('nScreens').value = '';
+        document.getElementById('cinemaCapacity').value = '';
+        document.getElementById('area').value = '';
+        return;
+      }
+
+      const found = appOptionsData.cinemas.find(c => c.name === selectedName);
+      if (found) {
+        document.getElementById('nScreens').value = found.screens;
+        document.getElementById('cinemaCapacity').value = found.capacity;
+        document.getElementById('area').value = found.area;
+      }
+    }
+
     function eseguiLogin() {
       const user = document.getElementById('loginUser').value;
       const pass = document.getElementById('loginPass').value;
@@ -346,12 +393,12 @@
 
       const cinemaSelect = document.getElementById('cinemaSelect');
 
-      // Gestione Permessi Selezione Cinema
       if (currentUser.ruolo === 'CINEMA') {
         cinemaSelect.value = currentUser.cinemaAssociato;
-        cinemaSelect.disabled = true; // Bloccato sul proprio cinema
+        cinemaSelect.disabled = true;
+        aggiornaDatiCinemaSelezionato();
       } else {
-        cinemaSelect.disabled = false; // Admin e TSC possono modificare
+        cinemaSelect.disabled = false;
       }
 
       aggiornaColoreStatus();
@@ -366,7 +413,6 @@
       document.getElementById('loginPass').value = '';
     }
 
-    // LOGICA SCREEN STATUS E DATA
     function aggiornaColoreStatus() {
       const statusSelect = document.getElementById('screenStatus');
       if (statusSelect.value === 'Open') {
@@ -388,7 +434,6 @@
       }
     }
 
-    // VALIDAZIONE E SALVATAGGIO
     function validaEInviaReport() {
       const dataChiusura = document.getElementById('dateProbableClosing').value;
       const statusSelect = document.getElementById('screenStatus').value;
@@ -436,6 +481,7 @@
           document.getElementById('incidentForm').reset();
           if (currentUser.ruolo === 'CINEMA') {
             document.getElementById('cinemaSelect').value = currentUser.cinemaAssociato;
+            aggiornaDatiCinemaSelezionato();
           }
           aggiornaColoreStatus();
           renderTabella(listaAggiornata);
