@@ -2,523 +2,213 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Incident Report System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    :root {
-      --primary-color: #8a0e88;
-      --bg-color: #f4f6f9;
-      --danger-color: #ff0000;
-      --success-color: #28a745;
-    }
-
     body {
+      background-color: #f8f9fa;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      margin: 0;
-      padding: 20px;
     }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: white;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    #loginSection {
-      max-width: 400px;
+    #loginCard {
+      max-width: 420px;
       margin: 80px auto;
-      padding: 30px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      text-align: center;
-    }
-
-    .section-title {
-      color: var(--primary-color);
-      border-bottom: 2px solid var(--primary-color);
-      padding-bottom: 5px;
-      margin-top: 20px;
-      margin-bottom: 15px;
-      font-size: 1.1rem;
-      font-weight: bold;
-    }
-
-    .grid-row {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .form-group {
-      flex: 1;
-      min-width: 180px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    input, select, textarea {
-      padding: 8px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.9rem;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-
-    .status-select {
-      font-weight: bold;
-      color: white !important;
-      transition: background-color 0.3s ease;
-    }
-    .status-close { background-color: var(--danger-color) !important; }
-    .status-open { background-color: var(--success-color) !important; }
-
-    .btn {
-      padding: 10px 20px;
       border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
-
-    .btn-primary { background-color: var(--primary-color); color: white; }
-    .btn-save { background-color: #333; color: white; float: right; margin-top: 15px; }
-
-    .header-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: var(--primary-color);
+    .card-header-custom {
+      background-color: #8a0e88;
       color: white;
-      padding: 10px 20px;
-      border-radius: 6px;
-      margin-bottom: 20px;
+      text-align: center;
+      padding: 1.5rem;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      font-size: 0.85rem;
+    .btn-custom {
+      background-color: #8a0e88;
+      color: white;
     }
-
-    table, th, td { border: 1px solid #ddd; }
-    th { background-color: var(--primary-color); color: white; padding: 8px; text-align: left; }
-    td { padding: 8px; }
-    tr:nth-child(even) { background-color: #f9f9f9; }
-
+    .btn-custom:hover {
+      background-color: #6b0b6a;
+      color: white;
+    }
+    .password-container {
+      position: relative;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      user-select: none;
+      font-size: 1.1rem;
+    }
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <!-- LOGIN SECTION -->
-  <div id="loginSection">
-    <h2 style="color: var(--primary-color);">Accesso Incident Report</h2>
-    <div style="text-align: left; margin-bottom: 15px;">
-      <label>Nome Utente / Cinema</label>
-      <input type="text" id="loginUser" style="width: 100%; box-sizing: border-box;" placeholder="Es: TSC Beinasco (TO) o Admin">
+  <!-- SCHERMATA DI LOGIN -->
+  <div id="loginSection" class="container">
+    <div class="card" id="loginCard">
+      <div class="card-header-custom">
+        <h4 class="mb-0">📹 Accesso Incident Report</h4>
+      </div>
+      <div class="card-body p-4">
+        <form id="loginForm" onsubmit="event.preventDefault(); eseguiLogin();">
+          
+          <div class="mb-3">
+            <label for="loginUser" class="form-label"><strong>Nome Utente / Cinema</strong></label>
+            <select id="loginUser" class="form-select" required>
+              <option value="">Caricamento utenti in corso...</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label for="loginPass" class="form-label"><strong>Password</strong></label>
+            <div class="password-container">
+              <input type="password" id="loginPass" class="form-control" placeholder="Inserisci password" required>
+              <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+            </div>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-custom btn-lg" id="btnLogin">ACCEDI</button>
+          </div>
+
+          <p id="loginMessage" class="text-center mt-3 fw-bold"></p>
+        </form>
+      </div>
     </div>
-    <div style="text-align: left; margin-bottom: 20px;">
-      <label>Password</label>
-      <input type="password" id="loginPass" style="width: 100%; box-sizing: border-box;">
-    </div>
-    <button class="btn btn-primary" style="width: 100%;" onclick="eseguiLogin()">ACCEDI</button>
-    <p id="loginError" style="color: red; margin-top: 10px;"></p>
   </div>
 
-  <!-- APP SECTION -->
-  <div id="appSection" class="container hidden">
-    
-    <div class="header-bar">
+  <!-- SCHERMATA PRINCIPALE (Form Incident) -->
+  <div id="appSection" class="container py-4 hidden">
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded shadow-sm">
       <div>
-        <strong>Utente:</strong> <span id="lblUtente">-</span> | 
-        <strong>Ruolo:</strong> <span id="lblRuolo">-</span>
+        <span>Benvenuto, <strong id="lblUtente">-</strong> (<span id="lblRuolo">-</span>)</span>
       </div>
-      <button class="btn" style="background: #fff; color: #333;" onclick="logout()">Logout</button>
+      <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
     </div>
 
-    <form id="incidentForm" onsubmit="event.preventDefault(); validaEInviaReport();">
-      
-      <!-- Sezione Cinema e Date -->
-      <div class="section-title">Cinema e Date</div>
-      <div class="grid-row">
-        <div class="form-group">
-          <label>Date of Original Issue</label>
-          <input type="date" id="dateOriginalIssue" required>
-        </div>
-        <div class="form-group">
-          <label>Date probable closing problem</label>
-          <input type="date" id="dateProbableClosing" onchange="gestisciCambioData()">
-        </div>
-        <div class="form-group">
-          <label>Reference number</label>
-          <input type="text" id="referenceNumber">
-        </div>
-        <div class="form-group" style="align-items: center; justify-content: center;">
-          <label><input type="checkbox" id="incidentAperto"> Incident Report Aperto</label>
-        </div>
-        <div class="form-group">
-          <label>Date Issue was resolved</label>
-          <input type="date" id="dateResolved">
-        </div>
-      </div>
-
-      <div class="grid-row">
-        <div class="form-group">
-          <label>Cinema</label>
-          <select id="cinemaSelect" required onchange="aggiornaDatiCinemaSelezionato()">
-            <option value="">-- Seleziona Cinema --</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>N. Screens</label>
-          <input type="number" id="nScreens" readonly style="background-color: #eee;">
-        </div>
-        <div class="form-group">
-          <label>Cinema Capacity (N.Seats)</label>
-          <input type="number" id="cinemaCapacity" readonly style="background-color: #eee;">
-        </div>
-        <div class="form-group">
-          <label>Area</label>
-          <input type="text" id="area" readonly style="background-color: #eee;">
-        </div>
-        <div class="form-group">
-          <label>Responsibility of failed equipment</label>
-          <select id="responsibility">
-            <option value="">-- Seleziona --</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Sezione Descrizione Problema -->
-      <div class="section-title">Descrizione Problema</div>
-      <div class="grid-row">
-        <div class="form-group">
-          <label>Screen</label>
-          <input type="text" id="screen">
-        </div>
-        <div class="form-group">
-          <label>Screen Capacity (N.Seats)</label>
-          <input type="number" id="screenCapacity">
-        </div>
-        <div class="form-group">
-          <label>Reason</label>
-          <select id="reason">
-            <option value="">-- Seleziona --</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Screen Status</label>
-          <select id="screenStatus" class="status-select status-close" onchange="aggiornaColoreStatus()">
-            <option value="Close" selected>Close</option>
-            <option value="Open">Open</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="grid-row">
-        <div class="form-group">
-          <label>Comments</label>
-          <textarea id="comments"></textarea>
-        </div>
-      </div>
-
-      <!-- Sezione Refunds -->
-      <div class="section-title">Refunds</div>
-      <div class="grid-row">
-        <div class="form-group">
-          <label>Sessions Lost</label>
-          <input type="number" id="sessionsLost">
-        </div>
-        <div class="form-group">
-          <label>Total of Refunds (€)</label>
-          <input type="number" step="0.01" id="totalRefunds">
-        </div>
-        <div class="form-group">
-          <label>Total of Complimentary</label>
-          <input type="number" id="totalComplimentary">
-        </div>
-      </div>
-
-      <!-- Sezione Closure of The Issue -->
-      <div class="section-title">Closure of The Issue</div>
-      <div class="grid-row">
-        <div class="form-group">
-          <label>Description Closure of The Issue</label>
-          <textarea id="descriptionClosure"></textarea>
-        </div>
-      </div>
-
-      <div class="grid-row" style="align-items: flex-end;">
-        <div class="form-group">
-          <label>Compiler (Surname Name)</label>
-          <input type="text" id="compiler" required>
-        </div>
-        <div class="form-group">
-          <button type="submit" class="btn btn-save">SAVE REPORT</button>
-        </div>
-      </div>
-    </form>
-
-    <!-- TABELLA REPORT -->
-    <div class="section-title" style="margin-top: 40px;">Elenco Report Registrati</div>
-    <div style="overflow-x: auto;">
-      <table id="reportsTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Data Issue</th>
-            <th>Cinema</th>
-            <th>Screen</th>
-            <th>Reason</th>
-            <th>Status</th>
-            <th>Probable Closure</th>
-            <th>Compiler</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody">
-          <tr><td colspan="8" style="text-align: center;">Caricamento dati in corso...</td></tr>
-        </tbody>
-      </table>
+    <div class="card p-4 shadow-sm">
+      <h3 class="text-primary mb-3">Compilazione Incident Report</h3>
+      <p>Pannello di controllo caricato con successo!</p>
     </div>
-
   </div>
 
   <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjwGLowrw4e7yBxayDH6jfp1f5laatjeclog-tOZPW1RHu5iamvgu03i4J6ZUXa80/exec";
+
     let currentUser = null;
-    let appOptionsData = null;
 
-    // Carica opzioni cinemas/reasons all'avvio
-    window.onload = function() {
-      google.script.run
-        .withSuccessHandler(function(options) {
-          appOptionsData = options;
-          popolaTendineIniziali();
-        })
-        .getAppOptions();
-    };
-
-    function popolaTendineIniziali() {
-      if (!appOptionsData) return;
-
-      const cinemaSelect = document.getElementById('cinemaSelect');
-      cinemaSelect.innerHTML = '<option value="">-- Seleziona Cinema --</option>';
-      appOptionsData.cinemas.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.name;
-        opt.textContent = c.name;
-        cinemaSelect.appendChild(opt);
-      });
-
-      const respSelect = document.getElementById('responsibility');
-      respSelect.innerHTML = '<option value="">-- Seleziona --</option>';
-      appOptionsData.responsibilities.forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r;
-        opt.textContent = r;
-        respSelect.appendChild(opt);
-      });
-
-      const reasonSelect = document.getElementById('reason');
-      reasonSelect.innerHTML = '<option value="">-- Seleziona --</option>';
-      appOptionsData.reasons.forEach(reas => {
-        const opt = document.createElement('option');
-        opt.value = reas;
-        opt.textContent = reas;
-        reasonSelect.appendChild(opt);
-      });
+    // Carica la lista degli utenti dal foglio "Utenti"
+    async function caricaListaUtenti() {
+      const selectUser = document.getElementById('loginUser');
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const data = await response.json();
+        
+        selectUser.innerHTML = '<option value="">-- Seleziona Utente / Cinema --</option>';
+        if (data.users && data.users.length > 0) {
+          data.users.forEach(user => {
+            const opt = document.createElement('option');
+            opt.value = user;
+            opt.textContent = user;
+            selectUser.appendChild(opt);
+          });
+        } else {
+          selectUser.innerHTML = '<option value="Admin">Admin</option>';
+        }
+      } catch (err) {
+        console.error("Errore nel caricamento utenti:", err);
+        selectUser.innerHTML = '<option value="">Errore nel caricamento utenti</option>';
+      }
     }
 
-    function aggiornaDatiCinemaSelezionato() {
-      const selectedName = document.getElementById('cinemaSelect').value;
-      if (!appOptionsData || !selectedName) {
-        document.getElementById('nScreens').value = '';
-        document.getElementById('cinemaCapacity').value = '';
-        document.getElementById('area').value = '';
+    // Toggle Occhio Password
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('loginPass');
+      const toggleIcon = document.querySelector('.toggle-password');
+      
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        toggleIcon.textContent = '🙈';
+      } else {
+        passInput.type = 'password';
+        toggleIcon.textContent = '👁️';
+      }
+    }
+
+    // Esegui Login via API
+    async function eseguiLogin() {
+      const user = document.getElementById('loginUser').value;
+      const pass = document.getElementById('loginPass').value;
+      const msgEl = document.getElementById('loginMessage');
+      const btn = document.getElementById('btnLogin');
+
+      if (!user) {
+        msgEl.style.color = 'red';
+        msgEl.textContent = 'Seleziona un utente dal menu.';
         return;
       }
 
-      const found = appOptionsData.cinemas.find(c => c.name === selectedName);
-      if (found) {
-        document.getElementById('nScreens').value = found.screens;
-        document.getElementById('cinemaCapacity').value = found.capacity;
-        document.getElementById('area').value = found.area;
+      msgEl.style.color = '#0d6efd';
+      msgEl.textContent = 'Verifica in corso...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            action: 'login',
+            username: user,
+            password: pass
+          })
+        });
+
+        const res = await response.json();
+
+        if (res.success) {
+          currentUser = res;
+          msgEl.style.color = 'green';
+          msgEl.textContent = 'Accesso riuscito!';
+          
+          setTimeout(() => {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            document.getElementById('lblUtente').textContent = currentUser.username;
+            document.getElementById('lblRuolo').textContent = currentUser.ruolo;
+          }, 600);
+
+        } else {
+          msgEl.style.color = 'red';
+          msgEl.textContent = res.message || 'Password errata.';
+        }
+      } catch (error) {
+        console.error("Errore login:", error);
+        msgEl.style.color = 'red';
+        msgEl.textContent = 'Errore di connessione. Riprova.';
+      } finally {
+        btn.disabled = false;
       }
-    }
-
-    function eseguiLogin() {
-      const user = document.getElementById('loginUser').value;
-      const pass = document.getElementById('loginPass').value;
-      const errEl = document.getElementById('loginError');
-
-      errEl.innerText = "Verifica in corso...";
-
-      google.script.run
-        .withSuccessHandler(function(res) {
-          if (res.success) {
-            currentUser = res;
-            errEl.innerText = "";
-            inizializzaApp();
-          } else {
-            errEl.innerText = res.message;
-          }
-        })
-        .withFailureHandler(function(err) {
-          errEl.innerText = "Errore di connessione al server.";
-        })
-        .autenticaUtente(user, pass);
-    }
-
-    function inizializzaApp() {
-      document.getElementById('loginSection').classList.add('hidden');
-      document.getElementById('appSection').classList.remove('hidden');
-
-      document.getElementById('lblUtente').innerText = currentUser.username;
-      document.getElementById('lblRuolo').innerText = currentUser.ruolo;
-
-      const cinemaSelect = document.getElementById('cinemaSelect');
-
-      if (currentUser.ruolo === 'CINEMA') {
-        cinemaSelect.value = currentUser.cinemaAssociato;
-        cinemaSelect.disabled = true;
-        aggiornaDatiCinemaSelezionato();
-      } else {
-        cinemaSelect.disabled = false;
-      }
-
-      aggiornaColoreStatus();
-      caricaTabellaData();
     }
 
     function logout() {
       currentUser = null;
       document.getElementById('appSection').classList.add('hidden');
       document.getElementById('loginSection').classList.remove('hidden');
-      document.getElementById('loginUser').value = '';
       document.getElementById('loginPass').value = '';
+      document.getElementById('loginMessage').textContent = '';
     }
 
-    function aggiornaColoreStatus() {
-      const statusSelect = document.getElementById('screenStatus');
-      if (statusSelect.value === 'Open') {
-        statusSelect.classList.remove('status-close');
-        statusSelect.classList.add('status-open');
-      } else {
-        statusSelect.classList.remove('status-open');
-        statusSelect.classList.add('status-close');
-      }
-    }
-
-    function gestisciCambioData() {
-      const dataChiusura = document.getElementById('dateProbableClosing').value;
-      const statusSelect = document.getElementById('screenStatus');
-
-      if (dataChiusura) {
-        statusSelect.value = 'Open';
-        aggiornaColoreStatus();
-      }
-    }
-
-    function validaEInviaReport() {
-      const dataChiusura = document.getElementById('dateProbableClosing').value;
-      const statusSelect = document.getElementById('screenStatus').value;
-
-      if (dataChiusura) {
-        const ok = confirm(`Hai inserito la data di probabile chiusura (${dataChiusura}). Lo status è impostato su '${statusSelect}'. Confermi che sia corretto?`);
-        if (!ok) return;
-      }
-
-      if (statusSelect === 'Close' && !dataChiusura) {
-        const ok = confirm("Attenzione: Lo status è 'CLOSE' ma manca la data di probabile chiusura. Vuoi proseguire comunque?");
-        if (!ok) return;
-      }
-
-      inviaDatiReport();
-    }
-
-    function inviaDatiReport() {
-      const payload = {
-        dateOriginalIssue: document.getElementById('dateOriginalIssue').value,
-        dateProbableClosing: document.getElementById('dateProbableClosing').value,
-        referenceNumber: document.getElementById('referenceNumber').value,
-        incidentAperto: document.getElementById('incidentAperto').checked,
-        dateResolved: document.getElementById('dateResolved').value,
-        cinema: document.getElementById('cinemaSelect').value,
-        nScreens: document.getElementById('nScreens').value,
-        cinemaCapacity: document.getElementById('cinemaCapacity').value,
-        area: document.getElementById('area').value,
-        responsibility: document.getElementById('responsibility').value,
-        screen: document.getElementById('screen').value,
-        screenCapacity: document.getElementById('screenCapacity').value,
-        reason: document.getElementById('reason').value,
-        screenStatus: document.getElementById('screenStatus').value,
-        comments: document.getElementById('comments').value,
-        sessionsLost: document.getElementById('sessionsLost').value,
-        totalRefunds: document.getElementById('totalRefunds').value,
-        totalComplimentary: document.getElementById('totalComplimentary').value,
-        descriptionClosure: document.getElementById('descriptionClosure').value,
-        compiler: document.getElementById('compiler').value
-      };
-
-      google.script.run
-        .withSuccessHandler(function(listaAggiornata) {
-          alert("Report registrato con successo!");
-          document.getElementById('incidentForm').reset();
-          if (currentUser.ruolo === 'CINEMA') {
-            document.getElementById('cinemaSelect').value = currentUser.cinemaAssociato;
-            aggiornaDatiCinemaSelezionato();
-          }
-          aggiornaColoreStatus();
-          renderTabella(listaAggiornata);
-        })
-        .salvaReportSuDb(payload, currentUser.username, currentUser.ruolo);
-    }
-
-    function caricaTabellaData() {
-      google.script.run
-        .withSuccessHandler(renderTabella)
-        .caricaReport(currentUser.username, currentUser.ruolo);
-    }
-
-    function renderTabella(list) {
-      const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '';
-
-      if (!list || list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nessun report trovato.</td></tr>';
-        return;
-      }
-
-      list.forEach(item => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${item['ID'] || ''}</td>
-          <td>${item['Date Original Issue'] || ''}</td>
-          <td>${item['Cinema'] || ''}</td>
-          <td>${item['Screen'] || ''}</td>
-          <td>${item['Reason'] || ''}</td>
-          <td style="font-weight:bold; color:${item['Screen Status'] === 'Open' ? 'green' : 'red'};">${item['Screen Status'] || ''}</td>
-          <td>${item['Date Probable Closing'] || ''}</td>
-          <td>${item['Compiler'] || ''}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+    // Inizializzazione al caricamento
+    document.addEventListener('DOMContentLoaded', () => {
+      caricaListaUtenti();
+    });
   </script>
 </body>
 </html>
