@@ -1,165 +1,11 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inserimento Incident Report</title>
-  <!-- Bootstrap CSS per layout e stile pulito -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body { background-color: #f4f6f9; font-family: Arial, sans-serif; }
-    .card-section { background: #ffffff; border-radius: 8px; border-left: 5px solid #9c27b0; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .section-title { color: #9c27b0; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; font-size: 1.1rem; }
-    .status-close { background-color: #dc3545 !important; color: white !important; font-weight: bold; }
-    .status-open { background-color: #198754 !important; color: white !important; font-weight: bold; }
-    label { font-size: 0.85rem; font-weight: 600; color: #495057; }
-  </style>
-</head>
-<body class="py-4">
-
-<div class="container">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>INSERIMENTO INCIDENT REPORT</h2>
-    <button class="btn btn-outline-secondary" type="button" onclick="alert('Torna alla Home')">Home</button>
-  </div>
-
-  <form id="incidentForm">
-    
-    <!-- SEZIONE 1: CINEMA E DATE -->
-    <div class="card card-section p-3">
-      <div class="section-title">Cinema e Date</div>
-      <div class="row g-3">
-        <div class="col-md-3">
-          <label class="form-label">Date of Original Issue</label>
-          <input type="date" class="form-control" id="dateOriginalIssue" required>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Date probable closing problem</label>
-          <input type="date" class="form-control" id="dateProbableClosing">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Reference number</label>
-          <input type="text" class="form-control" id="referenceNumber" readonly placeholder="Auto-generato">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Date Issue was resolved</label>
-          <input type="date" class="form-control" id="dateResolved">
-        </div>
-
-        <div class="col-md-3">
-          <label class="form-label">Cinema</label>
-          <select class="form-select" id="selectCinema" required>
-            <option value="">Seleziona Cinema...</option>
-          </select>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">N. Screens</label>
-          <input type="number" class="form-control" id="nScreens" readonly>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Cinema Capacity (Seats)</label>
-          <input type="number" class="form-control" id="cinemaCapacity" readonly>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Area</label>
-          <input type="text" class="form-control" id="area" readonly>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Responsibility of failed equipment</label>
-          <select class="form-select" id="selectResponsibility">
-            <option value="">Seleziona...</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- SEZIONE 2: DESCRIZIONE PROBLEMA -->
-    <div class="card card-section p-3">
-      <div class="section-title">Descrizione Problema</div>
-      <div class="row g-3">
-        <div class="col-md-3">
-          <label class="form-label">Screen</label>
-          <select class="form-select" id="selectScreen">
-            <option value="">Seleziona Sala...</option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Screen Capacity (Seats)</label>
-          <input type="number" class="form-control" id="screenCapacity" readonly>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Reason</label>
-          <select class="form-select" id="selectReason">
-            <option value="">Seleziona Motivo...</option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Screen Status</label>
-          <select class="form-select status-close" id="screenStatus" onchange="updateStatusColor(this)">
-            <option value="Close" class="bg-light text-dark">Close</option>
-            <option value="Open" class="bg-light text-dark">Open</option>
-          </select>
-        </div>
-        <div class="col-12">
-          <label class="form-label">Comments</label>
-          <textarea class="form-control" id="comments" rows="3"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- SEZIONE 3: REFUNDS -->
-    <div class="card card-section p-3">
-      <div class="section-title">Refunds</div>
-      <div class="row g-3">
-        <div class="col-md-4">
-          <label class="form-label">Sessions Lost</label>
-          <select class="form-select" id="sessionsLost">
-            <option value="">Seleziona Spettacoli Persi...</option>
-          </select>
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Total of Refunds (€)</label>
-          <input type="number" step="0.01" class="form-control" id="totalRefunds" min="0">
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Total of Complimentary</label>
-          <input type="number" class="form-control" id="totalComplimentary" min="0">
-        </div>
-      </div>
-    </div>
-
-    <!-- SEZIONE 4: CLOSURE OF THE ISSUE -->
-    <div class="card card-section p-3">
-      <div class="section-title">Closure of The Issue</div>
-      <div class="row g-3">
-        <div class="col-12">
-          <label class="form-label">Description Closure of The Issue</label>
-          <textarea class="form-control" id="descriptionClosure" rows="3"></textarea>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Compiler (Surname Name)</label>
-          <input type="text" class="form-control" id="compiler" required>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-end mb-5">
-      <button type="submit" class="btn btn-success btn-lg px-5">💾 Salva Report</button>
-    </div>
-
-  </form>
-</div>
-
 <script>
   let appOptions = {};
 
   // Cambia il colore dello Screen Status in base al valore
   function updateStatusColor(selectElement) {
-    if (selectElement.value === 'Close') {
-      selectElement.className = 'form-select status-close';
-    } else {
-      selectElement.className = 'form-select status-open';
-    }
+    selectElement.className = selectElement.value === 'Close' 
+      ? 'form-select status-close' 
+      : 'form-select status-open';
   }
 
   // Carica il file options.json
@@ -180,50 +26,39 @@
     selectCinema.innerHTML = '<option value="">Seleziona Cinema...</option>';
     if (appOptions.cinemas) {
       appOptions.cinemas.forEach(c => {
-        if (c.name !== "Admin") {
-          const opt = document.createElement('option');
-          opt.value = c.name;
-          opt.textContent = c.name;
-          selectCinema.appendChild(opt);
-        }
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = c.name;
+        selectCinema.appendChild(opt);
       });
     }
 
-    // 2. Popola Reason (Categorie)
+    // 2. Popola Responsabilità
+    const selectResp = document.getElementById('selectResponsibility');
+    selectResp.innerHTML = '<option value="">Seleziona...</option>';
+    if (appOptions.responsibilities) {
+      appOptions.responsibilities.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        selectResp.appendChild(opt);
+      });
+    }
+
+    // 3. Popola Motivo (Reason)
     const selectReason = document.getElementById('selectReason');
     selectReason.innerHTML = '<option value="">Seleziona Motivo...</option>';
-    if (appOptions.categories) {
-      appOptions.categories.forEach(cat => {
+    if (appOptions.reasons) {
+      appOptions.reasons.forEach(r => {
         const opt = document.createElement('option');
-        opt.value = cat;
-        opt.textContent = cat;
+        opt.value = r;
+        opt.textContent = r;
         selectReason.appendChild(opt);
       });
     }
-
-    // 3. Popola Sessions Lost
-    const selectSessions = document.getElementById('sessionsLost');
-    selectSessions.innerHTML = '<option value="">Seleziona Spettacoli Persi...</option>';
-    if (appOptions.sessions_lost) {
-      appOptions.sessions_lost.forEach(sess => {
-        const opt = document.createElement('option');
-        opt.value = sess;
-        opt.textContent = sess;
-        selectSessions.appendChild(opt);
-      });
-    }
-
-    // 4. Popola Responsabilità
-    const selectResp = document.getElementById('selectResponsibility');
-    selectResp.innerHTML = `
-      <option value="">Seleziona...</option>
-      <option value="TSC">TSC</option>
-      <option value="Landlord">Landlord</option>
-      <option value="Terzi">Terzi / Altro</option>
-    `;
   }
 
-  // Evento cambio Cinema: Popola sale, capienza e area
+  // Evento cambio Cinema: Popola dati e sale
   document.getElementById('selectCinema').addEventListener('change', function() {
     const selectedCinemaName = this.value;
     const cinemaObj = appOptions.cinemas ? appOptions.cinemas.find(c => c.name === selectedCinemaName) : null;
@@ -236,14 +71,23 @@
       const selectScreen = document.getElementById('selectScreen');
       selectScreen.innerHTML = '<option value="">Seleziona Sala...</option>';
       
-      const cinemaScreens = appOptions.screens[selectedCinemaName] || [];
-      cinemaScreens.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.screen;
-        opt.textContent = `${s.screen} (${s.seats} posti)`;
-        opt.dataset.seats = s.seats;
-        selectScreen.appendChild(opt);
-      });
+      // Se esiste la mappa dettagliata delle sale la usa, altrimenti genera le sale dinamiche (Sala 1 .. Sala N)
+      if (appOptions.screens && appOptions.screens[selectedCinemaName]) {
+        appOptions.screens[selectedCinemaName].forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.screen;
+          opt.textContent = `${s.screen} (${s.seats} posti)`;
+          opt.dataset.seats = s.seats;
+          selectScreen.appendChild(opt);
+        });
+      } else {
+        for (let i = 1; i <= cinemaObj.screens; i++) {
+          const opt = document.createElement('option');
+          opt.value = `Sala ${i}`;
+          opt.textContent = `Sala ${i}`;
+          selectScreen.appendChild(opt);
+        }
+      }
     } else {
       document.getElementById('nScreens').value = '';
       document.getElementById('cinemaCapacity').value = '';
@@ -253,14 +97,10 @@
     document.getElementById('screenCapacity').value = '';
   });
 
-  // Evento cambio Sala: Popola capienza della sala
+  // Evento cambio Sala: imposta posti se disponibili
   document.getElementById('selectScreen').addEventListener('change', function() {
     const selectedOpt = this.options[this.selectedIndex];
-    if (selectedOpt && selectedOpt.dataset.seats) {
-      document.getElementById('screenCapacity').value = selectedOpt.dataset.seats;
-    } else {
-      document.getElementById('screenCapacity').value = '';
-    }
+    document.getElementById('screenCapacity').value = (selectedOpt && selectedOpt.dataset.seats) ? selectedOpt.dataset.seats : '';
   });
 
   // Genera Reference Number in automatico alla selezione della data
@@ -272,7 +112,7 @@
     }
   });
 
-  // Gestione Invio del Form
+  // Gestione Invio Form
   document.getElementById('incidentForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -298,13 +138,9 @@
       compiler: document.getElementById('compiler').value
     };
 
-    console.log("Dati Incident Report:", formData);
+    console.log("Incident Report Registrato:", formData);
     alert("Incident Report salvato con successo!\nCodice: " + formData.referenceNumber);
   });
 
-  // Caricamento dati al ready della pagina
   window.addEventListener('DOMContentLoaded', loadOptions);
 </script>
-
-</body>
-</html>
