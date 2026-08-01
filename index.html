@@ -46,6 +46,14 @@
       font-size: 1.1rem;
     }
     .hidden { display: none !important; }
+    .screens-container {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ced4da;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -105,7 +113,7 @@
             </select>
           </div>
           <div class="col-md-3">
-            <label class="form-label">N. Schermi</label>
+            <label class="form-label">N. Schermi Totali</label>
             <input type="text" id="txtScreens" class="form-control" readonly>
           </div>
           <div class="col-md-3">
@@ -120,23 +128,44 @@
             <input type="text" id="txtArea" class="form-control" readonly>
           </div>
           <div class="col-md-6">
+            <label class="form-label">Seleziona Sala/e Interessata/e</label>
+            <div id="screensCheckboxes" class="screens-container">
+              <span class="text-muted">Seleziona prima un cinema...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
             <label class="form-label">Responsabilità</label>
             <select id="selResponsibility" class="form-select" required>
               <option value="">-- Seleziona --</option>
             </select>
           </div>
-        </div>
-
-        <div class="row mb-3">
           <div class="col-md-6">
             <label class="form-label">Motivazione</label>
             <select id="selReason" class="form-select" required>
               <option value="">-- Seleziona --</option>
             </select>
           </div>
-          <div class="col-md-6">
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
             <label class="form-label">Numero di Riferimento</label>
             <input type="text" id="txtReference" class="form-control" placeholder="Es. Ticket o Rif.">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Data Probabile Chiusura</label>
+            <input type="date" id="txtClosingDate" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Status / Verifica</label>
+            <select id="selStatus" class="form-select" required>
+              <option value="Aperto">Aperto</option>
+              <option value="In Verifica">In Verifica</option>
+              <option value="Risolto">Risolto</option>
+            </select>
           </div>
         </div>
 
@@ -218,17 +247,39 @@
 
     function aggiornaDatiCinema() {
       const nomeCinema = document.getElementById('selCinema').value;
+      const container = document.getElementById('screensCheckboxes');
+      
       if (!globalOptions || !nomeCinema) {
         document.getElementById('txtScreens').value = '';
         document.getElementById('txtCapacity').value = '';
         document.getElementById('txtArea').value = '';
+        container.innerHTML = '<span class="text-muted">Seleziona prima un cinema...</span>';
         return;
       }
+
       const cinemaObj = globalOptions.cinemas.find(c => c.name === nomeCinema);
       if (cinemaObj) {
         document.getElementById('txtScreens').value = cinemaObj.screens;
         document.getElementById('txtCapacity').value = cinemaObj.capacity;
         document.getElementById('txtArea').value = cinemaObj.area;
+
+        container.innerHTML = '';
+        const numSchermi = parseInt(cinemaObj.screens) || 0;
+        if (numSchermi > 0) {
+          for (let i = 1; i <= numSchermi; i++) {
+            const div = document.createElement('div');
+            div.className = 'form-check form-check-inline';
+            div.style.marginRight = '15px';
+            
+            div.innerHTML = `
+              <input class="form-check-input screen-checkbox" type="checkbox" value="Sala ${i}" id="chkSala${i}">
+              <label class="form-check-label" for="chkSala${i}">Sala ${i}</label>
+            `;
+            container.appendChild(div);
+          }
+        } else {
+          container.innerHTML = '<span class="text-muted">Nessuna sala disponibile</span>';
+        }
       }
     }
 
@@ -303,14 +354,22 @@
       const msgEl = document.getElementById('saveMessage');
       const btn = document.getElementById('btnSave');
       
+      const selectedScreens = [];
+      document.querySelectorAll('.screen-checkbox:checked').forEach(chk => {
+        selectedScreens.push(chk.value);
+      });
+
       const reportData = {
         cinema: document.getElementById('selCinema').value,
         nScreens: document.getElementById('txtScreens').value,
         cinemaCapacity: document.getElementById('txtCapacity').value,
         area: document.getElementById('txtArea').value,
+        selectedScreens: selectedScreens.join(', '),
         responsibility: document.getElementById('selResponsibility').value,
         reason: document.getElementById('selReason').value,
         referenceNumber: document.getElementById('txtReference').value,
+        closingDate: document.getElementById('txtClosingDate').value,
+        status: document.getElementById('selStatus').value,
         comments: document.getElementById('txtComments').value,
         compiler: currentUser ? currentUser.username : 'Admin'
       };
@@ -339,6 +398,7 @@
           document.getElementById('txtScreens').value = '';
           document.getElementById('txtCapacity').value = '';
           document.getElementById('txtArea').value = '';
+          document.getElementById('screensCheckboxes').innerHTML = '<span class="text-muted">Seleziona prima un cinema...</span>';
         } else {
           msgEl.style.color = 'red';
           msgEl.textContent = 'Errore: ' + res.message;
