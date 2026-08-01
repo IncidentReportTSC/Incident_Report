@@ -20,7 +20,7 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>INSERIMENTO INCIDENT REPORT</h2>
-    <button class="btn btn-outline-secondary" onclick="alert('Torna alla Home')">Home</button>
+    <button class="btn btn-outline-secondary" type="button" onclick="alert('Torna alla Home')">Home</button>
   </div>
 
   <form id="incidentForm">
@@ -113,7 +113,9 @@
       <div class="row g-3">
         <div class="col-md-4">
           <label class="form-label">Sessions Lost</label>
-          <input type="number" class="form-control" id="sessionsLost" min="0">
+          <select class="form-select" id="sessionsLost">
+            <option value="">Seleziona Spettacoli Persi...</option>
+          </select>
         </div>
         <div class="col-md-4">
           <label class="form-label">Total of Refunds (€)</label>
@@ -149,6 +151,8 @@
 </div>
 
 <script>
+  let appOptions = {};
+
   // Cambia il colore dello Screen Status in base al valore
   function updateStatusColor(selectElement) {
     if (selectElement.value === 'Close') {
@@ -157,6 +161,149 @@
       selectElement.className = 'form-select status-open';
     }
   }
+
+  // Carica il file options.json
+  async function loadOptions() {
+    try {
+      const response = await fetch('options.json');
+      appOptions = await response.json();
+      initForm();
+    } catch (error) {
+      console.error("Errore nel caricamento di options.json:", error);
+    }
+  }
+
+  // Inizializza i campi con i dati di options.json
+  function initForm() {
+    // 1. Popola i Cinema
+    const selectCinema = document.getElementById('selectCinema');
+    selectCinema.innerHTML = '<option value="">Seleziona Cinema...</option>';
+    if (appOptions.cinemas) {
+      appOptions.cinemas.forEach(c => {
+        if (c.name !== "Admin") {
+          const opt = document.createElement('option');
+          opt.value = c.name;
+          opt.textContent = c.name;
+          selectCinema.appendChild(opt);
+        }
+      });
+    }
+
+    // 2. Popola Reason (Categorie)
+    const selectReason = document.getElementById('selectReason');
+    selectReason.innerHTML = '<option value="">Seleziona Motivo...</option>';
+    if (appOptions.categories) {
+      appOptions.categories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        selectReason.appendChild(opt);
+      });
+    }
+
+    // 3. Popola Sessions Lost
+    const selectSessions = document.getElementById('sessionsLost');
+    selectSessions.innerHTML = '<option value="">Seleziona Spettacoli Persi...</option>';
+    if (appOptions.sessions_lost) {
+      appOptions.sessions_lost.forEach(sess => {
+        const opt = document.createElement('option');
+        opt.value = sess;
+        opt.textContent = sess;
+        selectSessions.appendChild(opt);
+      });
+    }
+
+    // 4. Popola Responsabilità
+    const selectResp = document.getElementById('selectResponsibility');
+    selectResp.innerHTML = `
+      <option value="">Seleziona...</option>
+      <option value="TSC">TSC</option>
+      <option value="Landlord">Landlord</option>
+      <option value="Terzi">Terzi / Altro</option>
+    `;
+  }
+
+  // Evento cambio Cinema: Popola sale, capienza e area
+  document.getElementById('selectCinema').addEventListener('change', function() {
+    const selectedCinemaName = this.value;
+    const cinemaObj = appOptions.cinemas ? appOptions.cinemas.find(c => c.name === selectedCinemaName) : null;
+    
+    if (cinemaObj) {
+      document.getElementById('nScreens').value = cinemaObj.screens;
+      document.getElementById('cinemaCapacity').value = cinemaObj.capacity;
+      document.getElementById('area').value = cinemaObj.area;
+      
+      const selectScreen = document.getElementById('selectScreen');
+      selectScreen.innerHTML = '<option value="">Seleziona Sala...</option>';
+      
+      const cinemaScreens = appOptions.screens[selectedCinemaName] || [];
+      cinemaScreens.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.screen;
+        opt.textContent = `${s.screen} (${s.seats} posti)`;
+        opt.dataset.seats = s.seats;
+        selectScreen.appendChild(opt);
+      });
+    } else {
+      document.getElementById('nScreens').value = '';
+      document.getElementById('cinemaCapacity').value = '';
+      document.getElementById('area').value = '';
+      document.getElementById('selectScreen').innerHTML = '<option value="">Seleziona Sala...</option>';
+    }
+    document.getElementById('screenCapacity').value = '';
+  });
+
+  // Evento cambio Sala: Popola capienza della sala
+  document.getElementById('selectScreen').addEventListener('change', function() {
+    const selectedOpt = this.options[this.selectedIndex];
+    if (selectedOpt && selectedOpt.dataset.seats) {
+      document.getElementById('screenCapacity').value = selectedOpt.dataset.seats;
+    } else {
+      document.getElementById('screenCapacity').value = '';
+    }
+  });
+
+  // Genera Reference Number in automatico alla selezione della data
+  document.getElementById('dateOriginalIssue').addEventListener('change', function() {
+    if (this.value) {
+      const cleanDate = this.value.replace(/-/g, '');
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('referenceNumber').value = `INC-${cleanDate}-${randomNum}`;
+    }
+  });
+
+  // Gestione Invio del Form
+  document.getElementById('incidentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+      referenceNumber: document.getElementById('referenceNumber').value,
+      dateOriginalIssue: document.getElementById('dateOriginalIssue').value,
+      dateProbableClosing: document.getElementById('dateProbableClosing').value,
+      dateResolved: document.getElementById('dateResolved').value,
+      cinema: document.getElementById('selectCinema').value,
+      nScreens: document.getElementById('nScreens').value,
+      cinemaCapacity: document.getElementById('cinemaCapacity').value,
+      area: document.getElementById('area').value,
+      responsibility: document.getElementById('selectResponsibility').value,
+      screen: document.getElementById('selectScreen').value,
+      screenCapacity: document.getElementById('screenCapacity').value,
+      reason: document.getElementById('selectReason').value,
+      screenStatus: document.getElementById('screenStatus').value,
+      comments: document.getElementById('comments').value,
+      sessionsLost: document.getElementById('sessionsLost').value,
+      totalRefunds: document.getElementById('totalRefunds').value,
+      totalComplimentary: document.getElementById('totalComplimentary').value,
+      descriptionClosure: document.getElementById('descriptionClosure').value,
+      compiler: document.getElementById('compiler').value
+    };
+
+    console.log("Dati Incident Report:", formData);
+    alert("Incident Report salvato con successo!\nCodice: " + formData.referenceNumber);
+  });
+
+  // Caricamento dati al ready della pagina
+  window.addEventListener('DOMContentLoaded', loadOptions);
 </script>
 
 </body>
