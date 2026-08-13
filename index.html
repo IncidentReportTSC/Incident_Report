@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Incident Report System</title>
+  <title>Incident Report System - The Space Cinema</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
@@ -47,7 +47,7 @@
     }
     .hidden { display: none !important; }
     .screens-container {
-      max-height: 200px;
+      max-height: 220px;
       overflow-y: auto;
       border: 1px solid #ced4da;
       padding: 10px;
@@ -139,7 +139,7 @@
             <label class="form-label d-flex justify-content-between align-items-center">
               <span>Seleziona Sala/e Interessata/e</span>
               <div>
-                <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-1 me-1" onclick="selezionaTutteSale(true)">All</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-1 me-1" onclick="selezionaTutteSale(true)">Tutte</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-1" onclick="selezionaTutteSale(false)">Nessuna</button>
               </div>
             </label>
@@ -150,15 +150,21 @@
         </div>
 
         <div class="row mb-3">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <label class="form-label">Responsabilità</label>
             <select id="selResponsibility" class="form-select" required>
               <option value="">-- Seleziona --</option>
             </select>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
             <label class="form-label">Motivazione</label>
             <select id="selReason" class="form-select" required>
+              <option value="">-- Seleziona --</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Spettacoli Persi (Sessions Lost)</label>
+            <select id="selSessionsLost" class="form-select" required>
               <option value="">-- Seleziona --</option>
             </select>
           </div>
@@ -221,14 +227,30 @@
     let currentUser = null;
     let globalOptions = null;
 
-async function caricaListaUtenti() {
+    async function caricaIniziale() {
+      // 1. Prova prima a caricare il file JSON opzioni (se presente nel repo GitHub)
+      try {
+        const localOptRes = await fetch('options.json');
+        if (localOptRes.ok) {
+          globalOptions = await localOptRes.json();
+          popolaCampiForm();
+        }
+      } catch(e) {
+        console.log("File options.json locale non trovato, uso Apps Script o fallback.");
+      }
+
+      // 2. Carica la lista utenti e/o opzioni da Google Apps Script
+      caricaListaUtenti();
+    }
+
+    async function caricaListaUtenti() {
       const selectUser = document.getElementById('loginUser');
       try {
         const response = await fetch(SCRIPT_URL, { redirect: "follow" });
         const textData = await response.text();
         const data = JSON.parse(textData);
         
-        if (data.options) {
+        if (data.options && !globalOptions) {
           globalOptions = data.options;
           popolaCampiForm();
         }
@@ -243,51 +265,65 @@ async function caricaListaUtenti() {
           });
         }
       } catch (err) {
-        console.error("Errore nel caricamento:", err);
-        // Fallback di emergenza con i backtick (` `) corretti per stringhe multilinea
+        console.error("Errore nel caricamento utenti:", err);
         selectUser.innerHTML = `
           <option value="">-- Seleziona Utente / Cinema --</option>
           <option value="admin">admin</option>
           <option value="TSC Beinasco (TO)">TSC Beinasco (TO)</option>
         `;
-        globalOptions = {
-          cinemas: [{ name: "TSC Beinasco (TO)", screens: 9, capacity: 2410, area: "AREA 1" }],
-          responsibilities: ["Manutenzione", "Pulizia", "Operation", "IT", "Direzione"],
-          reasons: ["Guasto Impianto", "Problema Tecnico", "Segnalazione Cliente", "Routine"]
-        };
-        popolaCampiForm();
       }
     }
 
     function popolaCampiForm() {
       if (!globalOptions) return;
       
-      const selCinema = document.getElementById('selCinema');
-      selCinema.innerHTML = '<option value="">-- Seleziona Cinema --</option>';
-      globalOptions.cinemas.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.name;
-        opt.textContent = c.name;
-        selCinema.appendChild(opt);
-      });
+      // Popola Cinema
+      if (globalOptions.cinemas) {
+        const selCinema = document.getElementById('selCinema');
+        selCinema.innerHTML = '<option value="">-- Seleziona Cinema --</option>';
+        globalOptions.cinemas.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.name;
+          opt.textContent = c.name;
+          selCinema.appendChild(opt);
+        });
+      }
 
-      const selResp = document.getElementById('selResponsibility');
-      selResp.innerHTML = '<option value="">-- Seleziona --</option>';
-      globalOptions.responsibilities.forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r;
-        opt.textContent = r;
-        selResp.appendChild(opt);
-      });
+      // Popola Responsabilità
+      if (globalOptions.responsibilities) {
+        const selResp = document.getElementById('selResponsibility');
+        selResp.innerHTML = '<option value="">-- Seleziona --</option>';
+        globalOptions.responsibilities.forEach(r => {
+          const opt = document.createElement('option');
+          opt.value = r;
+          opt.textContent = r;
+          selResp.appendChild(opt);
+        });
+      }
 
-      const selReason = document.getElementById('selReason');
-      selReason.innerHTML = '<option value="">-- Seleziona --</option>';
-      globalOptions.reasons.forEach(reason => {
-        const opt = document.createElement('option');
-        opt.value = reason;
-        opt.textContent = reason;
-        selReason.appendChild(opt);
-      });
+      // Popola Motivazioni
+      if (globalOptions.reasons) {
+        const selReason = document.getElementById('selReason');
+        selReason.innerHTML = '<option value="">-- Seleziona --</option>';
+        globalOptions.reasons.forEach(reason => {
+          const opt = document.createElement('option');
+          opt.value = reason;
+          opt.textContent = reason;
+          selReason.appendChild(opt);
+        });
+      }
+
+      // Popola Spettacoli Persi (Sessions Lost)
+      if (globalOptions.sessions_lost) {
+        const selSessions = document.getElementById('selSessionsLost');
+        selSessions.innerHTML = '<option value="">-- Seleziona --</option>';
+        globalOptions.sessions_lost.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          selSessions.appendChild(opt);
+        });
+      }
 
       const oggi = new Date().toISOString().split('T')[0];
       const openingInput = document.getElementById('txtOpeningDate');
@@ -326,31 +362,38 @@ async function caricaListaUtenti() {
 
       const cinemaObj = globalOptions.cinemas.find(c => c.name === nomeCinema);
       if (cinemaObj) {
-        document.getElementById('txtScreens').value = cinemaObj.screens;
-        document.getElementById('txtCapacity').value = cinemaObj.capacity;
-        document.getElementById('txtArea').value = cinemaObj.area;
+        // Gestisce sia 'screensCount' (del JSON) che 'screens' (se è un numero)
+        const numSchermi = cinemaObj.screensCount || (Array.isArray(cinemaObj.screens) ? cinemaObj.screens.length : (parseInt(cinemaObj.screens) || 0));
+        
+        document.getElementById('txtScreens').value = numSchermi;
+        document.getElementById('txtCapacity').value = cinemaObj.capacity || '';
+        document.getElementById('txtArea').value = cinemaObj.area || '';
 
         container.innerHTML = '';
-        const numSchermi = parseInt(cinemaObj.screens) || 0;
-        
-        if (numSchermi > 0) {
-          let postiMedioPerSala = Math.round((parseInt(cinemaObj.capacity) || 0) / numSchermi);
+        const listaSale = Array.isArray(cinemaObj.screens) ? cinemaObj.screens : null;
 
+        if (numSchermi > 0) {
           for (let i = 1; i <= numSchermi; i++) {
-            let postiSala = "";
-            if (cinemaObj.rooms && cinemaObj.rooms[i - 1] && cinemaObj.rooms[i - 1].seats) {
-              postiSala = ` (${cinemaObj.rooms[i - 1].seats} posti)`;
-            } else if (postiMedioPerSala > 0) {
-              postiSala = ` (~${postiMedioPerSala} posti)`;
+            let nomeSala = `Sala ${i}`;
+            let postiText = "";
+
+            if (listaSale && listaSale[i - 1]) {
+              nomeSala = listaSale[i - 1].name || nomeSala;
+              if (listaSale[i - 1].seats) {
+                postiText = ` (${listaSale[i - 1].seats} posti)`;
+              }
+            } else if (cinemaObj.capacity) {
+              let media = Math.round(parseInt(cinemaObj.capacity) / numSchermi);
+              postiText = ` (~${media} posti)`;
             }
 
             const div = document.createElement('div');
             div.className = 'form-check mb-2';
             
             div.innerHTML = `
-              <input class="form-check-input screen-checkbox" type="checkbox" value="Sala ${i}${postiSala}" id="chkSala${i}">
+              <input class="form-check-input screen-checkbox" type="checkbox" value="${nomeSala}${postiText}" id="chkSala${i}">
               <label class="form-check-label" for="chkSala${i}">
-                <strong>Sala ${i}</strong> ${postiSala}
+                <strong>${nomeSala}</strong> ${postiText}
               </label>
             `;
             container.appendChild(div);
@@ -452,6 +495,7 @@ async function caricaListaUtenti() {
         selectedScreens: selectedScreens.join(', '),
         responsibility: document.getElementById('selResponsibility').value,
         reason: document.getElementById('selReason').value,
+        sessionsLost: document.getElementById('selSessionsLost').value,
         referenceNumber: document.getElementById('txtReference').value,
         compiler: document.getElementById('txtCompiler').value,
         status: document.getElementById('selStatus').value,
@@ -510,7 +554,7 @@ async function caricaListaUtenti() {
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      caricaListaUtenti();
+      caricaIniziale();
     });
   </script>
 </body>
